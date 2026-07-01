@@ -20,6 +20,8 @@ import { districts } from "@/lib/data/districts";
 import { t, cn, formatPhoneIntl, formatPhoneLocal } from "@/lib/utils";
 import { Num } from "@/components/ui/Num";
 import { submitLead } from "@/lib/leads/client";
+import { buildClientToSalesMessage } from "@/lib/leads/messages";
+import { openWhatsApp } from "@/lib/leads/whatsapp";
 
 const goals = [
   { id: "buy", label: "شراء للسكن" },
@@ -92,7 +94,7 @@ export function ContactPageContent({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    await submitLead({
+    const result = await submitLead({
       source: "contact",
       propertyId,
       propertySlug,
@@ -108,7 +110,21 @@ export function ContactPageContent({
     });
 
     setSent(true);
-    window.open(whatsappUrl(buildWhatsAppMessage()), "_blank", "noopener,noreferrer");
+
+    if (result?.assignedRep) {
+      const msg = buildClientToSalesMessage(
+        {
+          propertyTitle,
+          clientName: name,
+          clientPhone: phone,
+          message: buildWhatsAppMessage(),
+        },
+        result.assignedRep.name,
+      );
+      openWhatsApp(result.assignedRep.whatsapp, msg);
+    } else {
+      window.open(whatsappUrl(buildWhatsAppMessage()), "_blank", "noopener,noreferrer");
+    }
   }
 
   return (

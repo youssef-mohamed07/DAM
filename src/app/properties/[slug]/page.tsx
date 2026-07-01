@@ -181,7 +181,7 @@ export default function PropertyDetailPage({
                     propertyId={property.id}
                     propertySlug={property.slug}
                     propertyTitle={t(property.title)}
-                    className="flex items-center justify-center gap-2 rounded-xl border border-gold/40 py-3 text-sm font-medium text-gold transition hover:bg-gold hover:text-black"
+                    className="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-gold py-3 text-sm font-bold text-black transition hover:brightness-110"
                   />
                   <a
                     href={`tel:${company.phone}`}

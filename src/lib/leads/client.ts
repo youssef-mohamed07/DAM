@@ -1,6 +1,6 @@
-import type { CreateLeadInput, Lead, UpdateLeadInput } from "@/types/leads";
+import type { CreateLeadInput, Lead, LeadCreateResponse, UpdateLeadInput } from "@/types/leads";
 
-export async function submitLead(input: CreateLeadInput): Promise<Lead | null> {
+export async function submitLead(input: CreateLeadInput): Promise<LeadCreateResponse | null> {
   try {
     const res = await fetch("/api/leads", {
       method: "POST",

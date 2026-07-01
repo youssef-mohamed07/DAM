@@ -17,6 +17,6 @@ export async function POST(request: Request) {
   if (!body.source) {
     return NextResponse.json({ error: "المصدر مطلوب" }, { status: 400 });
   }
-  const lead = await createLead(body);
-  return NextResponse.json(lead, { status: 201 });
+  const result = await createLead(body);
+  return NextResponse.json(result, { status: 201 });
 }

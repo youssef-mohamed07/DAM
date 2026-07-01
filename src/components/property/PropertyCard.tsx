@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, GitCompare, Bed, Bath, Maximize, ArrowUpLeft } from "lucide-react";
+import { Heart, GitCompare, Bed, Bath, Maximize, ArrowUpLeft, MessageCircle } from "lucide-react";
 import type { Property } from "@/types";
 import { useFavorites, useCompare } from "@/providers/FavoritesProvider";
+import { usePropertyInterest } from "@/components/leads/usePropertyInterest";
 import { formatPrice } from "@/lib/data/properties";
 import { t } from "@/lib/utils";
 import { Num } from "@/components/ui/Num";
@@ -19,6 +20,11 @@ interface PropertyCardProps {
 export function PropertyCard({ property, index = 0, variant = "default" }: PropertyCardProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const { addToCompare } = useCompare();
+  const { open: openInterest, modal: interestModal } = usePropertyInterest({
+    id: property.id,
+    slug: property.slug,
+    title: t(property.title),
+  });
   const fav = isFavorite(property.id);
 
   if (variant === "hero") {
@@ -163,6 +169,14 @@ export function PropertyCard({ property, index = 0, variant = "default" }: Prope
         <div className="flex gap-1.5">
           <button
             type="button"
+            aria-label="اهتمام"
+            onClick={openInterest}
+            className="rounded-full p-2 text-gold transition hover:bg-gold/10"
+          >
+            <MessageCircle className="h-3.5 w-3.5" />
+          </button>
+          <button
+            type="button"
             aria-label="المفضلة"
             onClick={() => toggleFavorite(property.id)}
             className={`rounded-full p-2 transition ${fav ? "bg-gold text-black" : "text-black/40 hover:bg-black/5 hover:text-black"}`}
@@ -179,6 +193,7 @@ export function PropertyCard({ property, index = 0, variant = "default" }: Prope
           </button>
         </div>
       </div>
+      {interestModal}
     </motion.article>
   );
 }

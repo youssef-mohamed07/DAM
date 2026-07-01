@@ -1,9 +1,12 @@
 import type { CreateLeadInput, LeadStatus, UpdateLeadInput } from "@/types/leads";
+import type { LeadCreateResponse } from "@/types/leads";
 import { getPropertyBySlug } from "@/lib/properties/repository";
-import { getSalesRepByAgentId } from "@/lib/sales/repository";
+import { pickRandomSalesRep } from "@/lib/sales/repository";
 import { prismaToLead } from "@/lib/leads/mapper";
 import { prisma } from "@/lib/prisma";
 import type { LeadStatus as PrismaLeadStatus } from "@prisma/client";
+import { formatPrice } from "@/lib/data/properties";
+import { districtLabel } from "@/lib/utils";
 
 export async function listLeads(filters?: {
   status?: string;
@@ -27,16 +30,27 @@ export async function getLead(id: string) {
   return row ? prismaToLead(row) : null;
 }
 
-export async function createLead(input: CreateLeadInput) {
-  let assignedSalesId: string | undefined;
+export async function createLead(input: CreateLeadInput): Promise<LeadCreateResponse> {
+  let notes = "";
+  let propertyType: string | undefined = input.propertyType;
+  let district: string | undefined = input.district;
+
   if (input.propertySlug) {
     const property = await getPropertyBySlug(input.propertySlug);
     if (property) {
-      const rep = await getSalesRepByAgentId(property.agentId);
-      if (rep) assignedSalesId = rep.id;
+      propertyType = propertyType ?? property.type;
+      district = district ?? property.district;
+      notes = [
+        `السعر: ${formatPrice(property.price)}`,
+        `المساحة: ${property.area} م²`,
+        `الغرف: ${property.bedrooms}`,
+        `المنطقة: ${districtLabel(property.district)}`,
+      ].join(" · ");
     }
   }
 
+  const rep = await pickRandomSalesRep();
+  const assignedSalesId = rep?.id;
   const status: LeadStatus = assignedSalesId ? "assigned" : "new";
 
   const row = await prisma.lead.create({
@@ -50,16 +64,24 @@ export async function createLead(input: CreateLeadInput) {
       clientPhone: input.clientPhone,
       clientEmail: input.clientEmail,
       message: input.message,
-      goal: input.goal,
-      propertyType: input.propertyType,
+      goal: input.goal ?? "استفسار عن عقار",
+      propertyType,
       budget: input.budget,
-      district: input.district,
+      district,
+      notes: notes || undefined,
       assignedSalesId,
       assignedAt: assignedSalesId ? new Date() : undefined,
     },
   });
 
-  return prismaToLead(row);
+  const lead = prismaToLead(row);
+
+  return {
+    lead,
+    assignedRep: rep
+      ? { id: rep.id, name: rep.name, whatsapp: rep.whatsapp }
+      : undefined,
+  };
 }
 
 export async function updateLead(id: string, input: UpdateLeadInput) {
@@ -113,21 +135,8 @@ export async function distributeLeads(leadIds?: string[]) {
   const updated = [];
 
   for (const row of unassigned) {
-    let repId: string | undefined;
-
-    if (row.propertySlug) {
-      const property = await getPropertyBySlug(row.propertySlug);
-      if (property) {
-        const rep = await getSalesRepByAgentId(property.agentId);
-        if (rep) repId = rep.id;
-      }
-    }
-
-    if (!repId) {
-      repId = reps[rr % reps.length].id;
-      rr++;
-    }
-
+    const repId = reps[rr % reps.length].id;
+    rr++;
     const lead = await updateLead(row.id, { assignedSalesId: repId });
     if (lead) updated.push(lead);
   }

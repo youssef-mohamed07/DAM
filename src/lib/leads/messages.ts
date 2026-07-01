@@ -42,9 +42,27 @@ export function buildSalesAssignmentMessage(lead: Lead, rep: SalesRep) {
   return lines.join("\n");
 }
 
-export function buildClientWhatsAppMessage(lead: Partial<Lead> & { propertyTitle?: string }) {
+export function buildClientToSalesMessage(
+  lead: Partial<Lead> & { propertyTitle?: string; clientName?: string; clientPhone?: string },
+  repName?: string,
+) {
+  const lines = [
+    `مرحباً${repName ? ` ${repName}` : ""}،`,
+    "",
+    `أنا *${lead.clientName || "عميل"}* ومهتم بالعقار التالي:`,
+    "",
+  ];
+  if (lead.propertyTitle) lines.push(`📍 *${lead.propertyTitle}*`);
+  if (lead.clientPhone) lines.push(`📱 *رقمي:* ${lead.clientPhone}`);
+  if (lead.message) lines.push("", lead.message);
+  lines.push("", "أرجو التواصل معي في أقرب وقت. شكراً!");
+  return lines.join("\n");
+}
+
+export function buildClientWhatsAppMessage(lead: Partial<Lead> & { propertyTitle?: string; clientName?: string }) {
+  const name = lead.clientName ? ` أنا ${lead.clientName}` : "";
   if (lead.propertyTitle) {
-    return `مرحباً DAM Properties، أريد الاستفسار عن ${lead.propertyTitle}`;
+    return `مرحباً DAM Properties،${name} أريد الاستفسار عن ${lead.propertyTitle}`;
   }
-  return "مرحباً DAM Properties، أريد استشارة عقارية";
+  return `مرحباً DAM Properties،${name} أريد استشارة عقارية`;
 }

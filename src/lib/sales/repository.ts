@@ -47,6 +47,13 @@ export async function getSalesRepByAgentId(agentId: string) {
   return all.find((s) => s.agentId === agentId);
 }
 
+/** توزيع عشوائي على مندوب نشط */
+export async function pickRandomSalesRep() {
+  const reps = await getActiveSalesReps();
+  if (reps.length === 0) return null;
+  return reps[Math.floor(Math.random() * reps.length)];
+}
+
 export type SalesRepInput = {
   name: string;
   role: string;

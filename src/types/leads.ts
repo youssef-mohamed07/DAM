@@ -39,6 +39,15 @@ export interface CreateLeadInput {
   district?: string;
 }
 
+export interface LeadCreateResponse {
+  lead: Lead;
+  assignedRep?: {
+    id: string;
+    name: string;
+    whatsapp: string;
+  };
+}
+
 export interface UpdateLeadInput {
   status?: LeadStatus;
   assignedSalesId?: string | null;
