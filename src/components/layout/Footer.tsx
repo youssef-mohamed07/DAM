@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Phone, Mail, Send, Share2 } from "lucide-react";
 import { company, facebookUrl } from "@/lib/data/company";
 import { Num } from "@/components/ui/Num";
+import { Logo } from "@/components/ui/Logo";
 import { formatPhoneIntl, formatPhoneLocal } from "@/lib/utils";
 
 export function Footer() {
@@ -12,8 +13,7 @@ export function Footer() {
       <div className="dam-container py-14 md:py-16">
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
-            <div className="font-serif text-2xl tracking-[0.15em] text-[#0a0a0a]">DAM</div>
-            <p className="mt-1 text-[9px] tracking-[0.35em] text-gold uppercase">عقارات</p>
+            <Logo size="lg" showTagline tagline="عقارات فاخرة" />
             <p className="mt-4 max-w-md text-sm leading-relaxed text-black/50">
               {company.about.lead}
             </p>

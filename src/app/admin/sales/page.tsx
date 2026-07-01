@@ -8,7 +8,16 @@ import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { whatsappLink } from "@/lib/leads/messages";
 import type { SalesRep } from "@/lib/data/sales";
 
-const emptyForm = { name: "", role: "", phone: "", whatsapp: "", agentId: "", active: true };
+const emptyForm = {
+  name: "",
+  role: "",
+  phone: "",
+  whatsapp: "",
+  telegramChatId: "",
+  telegramUserId: "",
+  agentId: "",
+  active: true,
+};
 
 const avatarColors = [
   "from-gold/30 to-gold/10 text-gold",
@@ -47,6 +56,8 @@ export default function AdminSalesPage() {
       role: rep.role,
       phone: rep.phone,
       whatsapp: rep.whatsapp,
+      telegramChatId: rep.telegramChatId ?? "",
+      telegramUserId: rep.telegramUserId ?? "",
       agentId: rep.agentId ?? "",
       active: rep.active,
     });
@@ -55,7 +66,12 @@ export default function AdminSalesPage() {
   }
 
   async function save() {
-    const payload = { ...form, agentId: form.agentId || undefined };
+    const payload = {
+      ...form,
+      agentId: form.agentId || undefined,
+      telegramChatId: form.telegramChatId || undefined,
+      telegramUserId: form.telegramUserId || undefined,
+    };
     const url = modal === "edit" && editId ? `/api/admin/sales/${editId}` : "/api/admin/sales";
     const method = modal === "edit" ? "PATCH" : "POST";
     await fetch(url, {
@@ -81,7 +97,7 @@ export default function AdminSalesPage() {
       <div className="flex flex-wrap items-end justify-between gap-4">
         <AdminPageHeader
           title="فريق المبيعات"
-          description="إدارة المندوبين وأرقام الواتساب"
+          description="إدارة المندوبين — واتساب وتليجرام"
         />
         <button
           type="button"
@@ -142,6 +158,7 @@ export default function AdminSalesPage() {
               <p className="relative text-sm text-black/50">{rep.role}</p>
               <p className="relative mt-2 text-xs text-black/40" dir="ltr">
                 WhatsApp: {rep.whatsapp}
+                {rep.telegramUserId ? ` · @${rep.telegramUserId}` : ""}
               </p>
               <span
                 className={`relative mt-3 inline-block rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
@@ -207,6 +224,36 @@ export default function AdminSalesPage() {
                   />
                 </div>
               ))}
+              <div>
+                <label className="mb-1 block text-xs font-medium text-black/45">
+                  Telegram User ID (للمنشن)
+                </label>
+                <input
+                  className="dam-contact-input w-full text-sm"
+                  value={form.telegramUserId}
+                  onChange={(e) => setForm({ ...form, telegramUserId: e.target.value })}
+                  placeholder="5481253954"
+                  dir="ltr"
+                />
+                <p className="mt-1 text-[10px] text-black/35">
+                  المندوب يبعت <code>/me</code> للبوت في الجروب، أو <code>/link s1</code> للربط التلقائي
+                </p>
+              </div>
+              <div>
+                <label className="mb-1 block text-xs font-medium text-black/45">
+                  Telegram Chat ID (اختياري)
+                </label>
+                <input
+                  className="dam-contact-input w-full text-sm"
+                  value={form.telegramChatId}
+                  onChange={(e) => setForm({ ...form, telegramChatId: e.target.value })}
+                  placeholder="-1001234567890"
+                  dir="ltr"
+                />
+                <p className="mt-1 text-[10px] text-black/35">
+                  لو فاضي، الرسائل تروح لـ TELEGRAM_SALES_CHAT_ID في الإعدادات
+                </p>
+              </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-black/45">Agent ID</label>
                 <input

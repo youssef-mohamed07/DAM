@@ -1,12 +1,15 @@
 import type { CreateLeadInput, LeadStatus, UpdateLeadInput } from "@/types/leads";
 import type { LeadCreateResponse } from "@/types/leads";
 import { getPropertyBySlug } from "@/lib/properties/repository";
-import { pickRandomSalesRep } from "@/lib/sales/repository";
+import { getSalesRep } from "@/lib/sales/repository";
+import { pickSalesRepForLead, pickSalesRepForExistingLead } from "@/lib/leads/distribute";
 import { prismaToLead } from "@/lib/leads/mapper";
 import { prisma } from "@/lib/prisma";
 import type { LeadStatus as PrismaLeadStatus } from "@prisma/client";
 import { formatPrice } from "@/lib/data/properties";
 import { districtLabel } from "@/lib/utils";
+import { notifySalesRep } from "@/lib/leads/notify-telegram";
+import { getSystemSettings } from "@/lib/settings/store";
 
 export async function listLeads(filters?: {
   status?: string;
@@ -34,12 +37,14 @@ export async function createLead(input: CreateLeadInput): Promise<LeadCreateResp
   let notes = "";
   let propertyType: string | undefined = input.propertyType;
   let district: string | undefined = input.district;
+  let propertyAgentId: string | undefined;
 
   if (input.propertySlug) {
     const property = await getPropertyBySlug(input.propertySlug);
     if (property) {
       propertyType = propertyType ?? property.type;
       district = district ?? property.district;
+      propertyAgentId = property.agentId;
       notes = [
         `السعر: ${formatPrice(property.price)}`,
         `المساحة: ${property.area} م²`,
@@ -49,7 +54,10 @@ export async function createLead(input: CreateLeadInput): Promise<LeadCreateResp
     }
   }
 
-  const rep = await pickRandomSalesRep();
+  const settings = await getSystemSettings();
+  const rep = settings.autoAssign
+    ? await pickSalesRepForLead({ propertyAgentId })
+    : null;
   const assignedSalesId = rep?.id;
   const status: LeadStatus = assignedSalesId ? "assigned" : "new";
 
@@ -71,16 +79,23 @@ export async function createLead(input: CreateLeadInput): Promise<LeadCreateResp
       notes: notes || undefined,
       assignedSalesId,
       assignedAt: assignedSalesId ? new Date() : undefined,
+      notifyStatus: rep ? "pending" : undefined,
     },
   });
 
   const lead = prismaToLead(row);
 
+  let salesNotified = false;
+  if (rep) {
+    salesNotified = await notifySalesRep(lead, rep);
+  }
+
   return {
-    lead,
+    lead: (await getLead(lead.id)) ?? lead,
     assignedRep: rep
       ? { id: rep.id, name: rep.name, whatsapp: rep.whatsapp }
       : undefined,
+    salesNotified,
   };
 }
 
@@ -96,6 +111,7 @@ export async function updateLead(id: string, input: UpdateLeadInput) {
     if (input.assignedSalesId) {
       data.assignedSalesId = input.assignedSalesId;
       data.assignedAt = new Date();
+      data.notifyStatus = "pending";
       if (current.status === "new") data.status = "assigned";
     } else {
       data.assignedSalesId = null;
@@ -106,7 +122,19 @@ export async function updateLead(id: string, input: UpdateLeadInput) {
   if (input.status) data.status = input.status;
 
   const row = await prisma.lead.update({ where: { id }, data });
-  return prismaToLead(row);
+  const lead = prismaToLead(row);
+
+  const newlyAssigned =
+    input.assignedSalesId &&
+    input.assignedSalesId !== current.assignedSalesId;
+
+  if (newlyAssigned && lead.assignedSalesId) {
+    const rep = await getSalesRep(lead.assignedSalesId);
+    if (rep) await notifySalesRep(lead, rep);
+    return getLead(id);
+  }
+
+  return lead;
 }
 
 export async function assignLeadsToRep(leadIds: string[], salesRepId: string) {
@@ -131,17 +159,38 @@ export async function distributeLeads(leadIds?: string[]) {
     orderBy: { createdAt: "asc" },
   });
 
-  let rr = 0;
   const updated = [];
 
   for (const row of unassigned) {
-    const repId = reps[rr % reps.length].id;
-    rr++;
-    const lead = await updateLead(row.id, { assignedSalesId: repId });
+    let propertyAgentId: string | undefined;
+    if (row.propertySlug) {
+      const property = await getPropertyBySlug(row.propertySlug);
+      propertyAgentId = property?.agentId;
+    }
+
+    const rep = await pickSalesRepForExistingLead(prismaToLead(row), propertyAgentId);
+    if (!rep) continue;
+
+    const lead = await updateLead(row.id, { assignedSalesId: rep.id });
     if (lead) updated.push(lead);
   }
 
   return { updated, count: updated.length };
+}
+
+export async function resendLeadNotification(leadId: string) {
+  const lead = await getLead(leadId);
+  if (!lead?.assignedSalesId) return { ok: false as const, error: "لا يوجد مندوب معيّن" };
+
+  const rep = await getSalesRep(lead.assignedSalesId);
+  if (!rep) return { ok: false as const, error: "المندوب غير موجود" };
+
+  const sent = await notifySalesRep(lead, rep);
+  return {
+    ok: sent,
+    error: sent ? undefined : "فشل الإرسال",
+    lead: await getLead(leadId),
+  };
 }
 
 export async function getLeadStats() {
@@ -179,5 +228,51 @@ export async function getLeadStats() {
     byStatus,
     byProperty,
     recent: recent.map(prismaToLead),
+  };
+}
+
+export async function getOperationsStats() {
+  const [unassigned, byRep, settings] = await Promise.all([
+    prisma.lead.count({ where: { assignedSalesId: null, status: { notIn: ["won", "lost"] } } }),
+    prisma.lead.groupBy({
+      by: ["assignedSalesId"],
+      where: { assignedSalesId: { not: null } },
+      _count: { _all: true },
+    }),
+    getSystemSettings(),
+  ]);
+
+  const notifications: Record<string, number> = {
+    sent: 0,
+    failed: 0,
+    pending: 0,
+    skipped: 0,
+  };
+
+  try {
+    const notifyStats = await prisma.lead.groupBy({
+      by: ["notifyStatus"],
+      _count: { _all: true },
+    });
+    for (const g of notifyStats) {
+      if (g.notifyStatus) notifications[g.notifyStatus] = g._count._all;
+    }
+  } catch {
+    const rows = await prisma.lead.findMany({
+      select: { notifyStatus: true },
+    });
+    for (const row of rows) {
+      if (row.notifyStatus) notifications[row.notifyStatus]++;
+    }
+  }
+
+  return {
+    unassigned,
+    notifications,
+    byRep: byRep.map((g) => ({
+      salesRepId: g.assignedSalesId!,
+      count: g._count._all,
+    })),
+    settings,
   };
 }

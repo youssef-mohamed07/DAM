@@ -22,6 +22,13 @@ enum LeadSource {
   manual
 }
 
+enum NotifyStatus {
+  pending
+  sent
+  failed
+  skipped
+}
+
 model Lead {
   id              String     @id @default(uuid()) @db.Uuid
   createdAt       DateTime   @default(now()) @map("created_at")
@@ -42,6 +49,9 @@ model Lead {
   assignedSalesId String?    @map("assigned_sales_id")
   assignedAt      DateTime?  @map("assigned_at")
   notes           String?
+  notifyStatus    NotifyStatus? @map("notify_status")
+  notifiedAt      DateTime?  @map("notified_at")
+  notifyError     String?    @map("notify_error")
 
   @@index([createdAt(sort: Desc)])
   @@index([status])
@@ -93,10 +103,36 @@ model SalesRep {
   role      String
   phone     String
   whatsapp  String
+  telegramChatId String?  @map("telegram_chat_id")
+  telegramUserId String?  @map("telegram_user_id")
   agentId   String?  @map("agent_id")
   active    Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("sales_reps")
+}
+
+model TelegramGroupMember {
+  chatId         String   @map("chat_id")
+  telegramUserId String   @map("telegram_user_id")
+  firstName      String?  @map("first_name")
+  lastName       String?  @map("last_name")
+  username       String?
+  isBot          Boolean  @default(false) @map("is_bot")
+  isAdmin        Boolean  @default(false) @map("is_admin")
+  firstSeenAt    DateTime @default(now()) @map("first_seen_at")
+  lastSeenAt     DateTime @updatedAt @map("last_seen_at")
+
+  @@id([chatId, telegramUserId])
+  @@index([chatId])
+  @@map("telegram_group_members")
+}
+
+model AppSetting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("app_settings")
 }

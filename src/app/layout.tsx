@@ -6,6 +6,7 @@ import { PropertiesProvider } from "@/providers/PropertiesProvider";
 import { FavoritesProvider, CompareProvider } from "@/providers/FavoritesProvider";
 import { PublicChrome } from "@/components/layout/PublicChrome";
 import { company } from "@/lib/data/company";
+import { LOGO_ALT, LOGO_SRC } from "@/components/ui/Logo";
 
 const cairo = Cairo({
   subsets: ["latin", "arabic"],
@@ -37,6 +38,26 @@ export const metadata: Metadata = {
     "DAM Properties",
     "وساطة عقارية",
   ],
+  icons: {
+    icon: [{ url: LOGO_SRC, type: "image/png" }],
+    shortcut: LOGO_SRC,
+    apple: LOGO_SRC,
+  },
+  openGraph: {
+    title: company.name,
+    description: company.tagline,
+    images: [{ url: LOGO_SRC, width: 1254, height: 1254, alt: LOGO_ALT }],
+  },
+  twitter: {
+    card: "summary",
+    title: company.name,
+    description: company.tagline,
+    images: [LOGO_SRC],
+  },
+  appleWebApp: {
+    title: company.name,
+  },
+  manifest: "/manifest.webmanifest",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

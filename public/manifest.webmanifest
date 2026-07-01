@@ -1,0 +1,17 @@
+{
+  "name": "DAM Properties",
+  "short_name": "DAM",
+  "description": "وساطة عقارية فاخرة في مدينة العبور",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

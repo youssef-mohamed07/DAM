@@ -191,8 +191,8 @@ export default function AdminPage() {
             <h2 className="font-semibold text-[#0a0a0a]">إجراءات سريعة</h2>
             <div className="mt-4 space-y-2">
               {[
+                { href: "/admin/operations", label: "التوزيع والإشعارات", icon: MessageCircle },
                 { href: "/admin/properties/new", label: "إضافة عقار", icon: Building2 },
-                { href: "/admin/whatsapp", label: "واتساب", icon: MessageCircle },
                 { href: "/admin/leads", label: "العملاء", icon: MessageSquare },
                 { href: "/admin/sales", label: "فريق المبيعات", icon: Users },
                 { href: "/admin/properties", label: `العقارات (${propertyCount ?? "…"})`, icon: Building2 },
@@ -218,7 +218,7 @@ export default function AdminPage() {
               <span className="text-xs font-bold uppercase">تلميح</span>
             </div>
             <p className="mt-3 text-sm leading-relaxed text-black/55">
-              العملاء يُسجَّلون تلقائياً من الموقع. أرسل التفاصيل للمندوب من صفحة العميل أو مركز واتساب.
+              العملاء يُسجَّلون ويُوزَّعون تلقائياً على المندوبين مع إشعار تليجرام خاص. تحكم كامل من مركز التشغيل.
             </p>
           </div>
         </div>

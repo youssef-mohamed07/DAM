@@ -22,5 +22,8 @@ export function prismaToLead(row: PrismaLead): Lead {
     assignedSalesId: row.assignedSalesId ?? undefined,
     assignedAt: row.assignedAt?.toISOString(),
     notes: row.notes ?? undefined,
+    notifyStatus: row.notifyStatus ?? undefined,
+    notifiedAt: row.notifiedAt?.toISOString(),
+    notifyError: row.notifyError ?? undefined,
   };
 }

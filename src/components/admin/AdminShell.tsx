@@ -12,15 +12,16 @@ import {
   Menu,
   Bell,
   ExternalLink,
-  MessageCircle,
+  Zap,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Logo, LogoMark } from "@/components/ui/Logo";
 
 const nav = [
   { icon: LayoutDashboard, label: "لوحة التحكم", href: "/admin" },
+  { icon: Zap, label: "التوزيع والإشعارات", href: "/admin/operations" },
   { icon: Building2, label: "العقارات", href: "/admin/properties" },
   { icon: MessageSquare, label: "العملاء", href: "/admin/leads" },
-  { icon: MessageCircle, label: "واتساب", href: "/admin/whatsapp" },
   { icon: Users, label: "فريق المبيعات", href: "/admin/sales" },
   { icon: ExternalLink, label: "الموقع", href: "/", external: true },
 ];
@@ -43,15 +44,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const Sidebar = (
     <div className="flex h-full flex-col">
       <div className="border-b border-white/8 px-6 py-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-gold/40 bg-gold/10 font-serif text-gold">
-            D
-          </div>
-          <div>
-            <div className="font-serif text-lg tracking-[0.15em] text-white">DAM</div>
-            <div className="text-[9px] tracking-[0.35em] text-white/35 uppercase">Admin Panel</div>
-          </div>
-        </div>
+        <Logo
+          size="sm"
+          href="/admin"
+          showTagline
+          tagline="Admin Panel"
+          taglineClassName="text-white/35 uppercase tracking-[0.35em]"
+        />
       </div>
 
       <nav className="flex-1 space-y-1 p-4">
@@ -118,6 +117,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             <button type="button" className="rounded-lg border border-black/10 p-2 lg:hidden" onClick={() => setMobileOpen(true)} aria-label="القائمة">
               <Menu className="h-5 w-5" />
             </button>
+            <LogoMark size="xs" className="hidden sm:inline-flex" />
             <div>
               <p className="text-sm font-semibold text-[#0a0a0a]">لوحة تحكم DAM</p>
               <p className="text-[11px] text-black/40">مرحباً، Admin</p>

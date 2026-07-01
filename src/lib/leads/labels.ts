@@ -1,4 +1,4 @@
-import type { LeadStatus } from "@/types/leads";
+import type { LeadStatus, NotifyStatus } from "@/types/leads";
 
 export const leadStatusLabels: Record<LeadStatus, string> = {
   new: "جديد",
@@ -20,4 +20,18 @@ export const leadSourceLabels = {
   property: "صفحة عقار",
   contact: "نموذج تواصل",
   manual: "يدوي",
+};
+
+export const notifyStatusLabels: Record<NotifyStatus, string> = {
+  pending: "قيد الإرسال",
+  sent: "تم الإرسال",
+  failed: "فشل",
+  skipped: "متخطى",
+};
+
+export const notifyStatusColors: Record<NotifyStatus, string> = {
+  pending: "bg-amber-500/10 text-amber-700",
+  sent: "bg-emerald-500/10 text-emerald-700",
+  failed: "bg-red-500/10 text-red-700",
+  skipped: "bg-black/8 text-black/45",
 };

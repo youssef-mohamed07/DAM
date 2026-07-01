@@ -24,6 +24,7 @@ import {
 import { company, whatsappUrl } from "@/lib/data/company";
 import { t, cn } from "@/lib/utils";
 import { useApp } from "@/providers/AppProvider";
+import { Logo } from "@/components/ui/Logo";
 
 const navLinks = [
   { href: "/properties", label: "العقارات", mega: true },
@@ -78,23 +79,17 @@ export function Navbar() {
             )}
           >
           <div className="flex items-center justify-between gap-3">
-            <Link href="/" className="group relative flex shrink-0 items-center gap-2.5 ps-1">
-              <div className="relative flex h-9 w-9 items-center justify-center rounded-full border border-gold/50 bg-gold/10 font-serif text-sm text-gold shadow-[0_0_20px_rgba(201,162,39,0.15)] transition group-hover:border-gold group-hover:bg-gold group-hover:text-black">
-                D
-                <span className="absolute -inset-0.5 rounded-full border border-gold/20 opacity-0 transition group-hover:opacity-100" />
-              </div>
-              <div className="hidden sm:block">
-                <div className="text-gradient-gold font-serif text-base tracking-[0.2em]">DAM</div>
-                <div
-                  className={cn(
-                    "text-[9px] tracking-[0.3em] sm:text-[10px] sm:tracking-[0.35em]",
-                    isHomeHero ? "text-white/50" : "text-black/40",
-                  )}
-                >
-                  عقارات فاخرة
-                </div>
-              </div>
-            </Link>
+            <Logo
+              size="sm"
+              showTagline
+              tagline="عقارات فاخرة"
+              taglineClassName={cn(
+                "hidden sm:block",
+                isHomeHero ? "text-white/50" : "text-black/40",
+              )}
+              className="ps-1"
+              priority
+            />
 
             <nav
               className={cn(

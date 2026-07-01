@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Search, MapPin, Home, ChevronDown, Calendar, ArrowLeft } from "lucide-react";
+import { Search, MapPin, Home, ChevronDown, Calendar, ArrowLeft, Sparkles } from "lucide-react";
 import { IMAGES } from "@/lib/images";
 import { districts } from "@/lib/data/districts";
 import { formatPrice } from "@/lib/data/properties";
@@ -42,7 +42,8 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="relative min-h-[100svh] w-full max-w-full overflow-x-clip bg-[#080808]">
+    <section className="relative min-h-[100svh] w-full max-w-full overflow-x-clip">
+      {/* Animated Background */}
       <motion.div style={reduceMotion ? undefined : { y }} className="absolute inset-0">
         {loaded && !videoFailed ? (
           <video
@@ -69,75 +70,116 @@ export function Hero() {
             sizes="100vw"
           />
         )}
-        <div className="dam-hero-overlay absolute inset-0" />
+        <div className="dam-hero-overlay absolute inset-0 bg-gradient-to-b from-black/40 via-black/50 to-black/60" />
+        
+        {/* Animated Gradient Overlay */}
+        <motion.div 
+          className="absolute inset-0 bg-gradient-to-br from-gold-bright/10 via-transparent to-transparent"
+          animate={{ 
+            opacity: [0.3, 0.5, 0.3],
+          }}
+          transition={{ duration: 8, repeat: Infinity }}
+        />
       </motion.div>
 
+      {/* Content Section */}
       <motion.div
         style={{ opacity }}
-        className="relative z-10 flex min-h-[100svh] flex-col justify-end pb-24 pt-28 sm:pb-28 sm:pt-32 md:pb-32 md:pt-36"
+        className="relative z-10 flex min-h-[100svh] flex-col justify-between pb-20 pt-28 sm:pb-28 sm:pt-32 md:pb-32 md:pt-36"
       >
-        <div className="dam-container grid min-w-0 items-end gap-8 sm:gap-10 lg:grid-cols-12 lg:gap-16">
-          <div className="min-w-0 lg:col-span-7">
+        <div className="dam-container grid min-w-0 items-end gap-12 sm:gap-14 lg:grid-cols-12 lg:gap-20">
+          {/* Left Content */}
+          <div className="min-w-0 lg:col-span-7 space-y-8">
+            {/* Badge */}
+            <motion.div
+              initial={loaded ? { opacity: 0, x: -30 } : false}
+              animate={loaded ? { opacity: 1, x: 0 } : undefined}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="inline-flex items-center gap-2 rounded-full border border-gold-bright/30 bg-gold-bright/10 px-4 py-2 backdrop-blur-sm w-fit"
+            >
+              <Sparkles className="h-3 w-3 text-gold-bright" />
+              <span className="text-xs font-semibold text-gold-bright tracking-widest uppercase">
+                العقارات الفاخرة
+              </span>
+            </motion.div>
+
+            {/* Main Title */}
+            <motion.div
+              initial={loaded ? { opacity: 0, y: 40 } : false}
+              animate={loaded ? { opacity: 1, y: 0 } : undefined}
+              transition={{ duration: 0.9, delay: 0.25 }}
+              className="space-y-3"
+            >
+              <h1 className="dam-hero-title font-serif text-4xl leading-[1.08] font-bold text-white sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
+                {company.hero.title}
+              </h1>
+              <p className="text-2xl sm:text-3xl md:text-4xl font-light text-gold-bright/90 italic">
+                {company.hero.highlight}
+              </p>
+            </motion.div>
+
+            {/* Description */}
             <motion.p
               initial={loaded ? { opacity: 0, y: 20 } : false}
               animate={loaded ? { opacity: 1, y: 0 } : undefined}
-              transition={{ duration: 0.7, delay: 0.2 }}
-              className="text-[10px] font-semibold tracking-[0.2em] text-gold-bright uppercase sm:text-[11px] sm:tracking-[0.35em]"
+              transition={{ duration: 0.7, delay: 0.45 }}
+              className="max-w-2xl text-base sm:text-lg text-white/75 leading-relaxed"
             >
-              {company.hero.eyebrow}
+              استكشف مجموعة حصرية من العقارات الفاخرة في أجمل المناطق، مع خدمات استشارية متميزة وتصاميم معمارية عصرية.
             </motion.p>
 
-            <motion.h1
-              initial={loaded ? { opacity: 0, y: 30 } : false}
-              animate={loaded ? { opacity: 1, y: 0 } : undefined}
-              transition={{ duration: 0.9, delay: 0.35 }}
-              className="dam-hero-title font-serif mt-4 max-w-3xl text-balance text-3xl leading-[1.12] font-semibold text-white sm:mt-5 sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl"
-            >
-              {company.hero.title}
-              <br />
-              <span className="text-gradient-gold italic">{company.hero.highlight}</span>
-            </motion.h1>
-
+            {/* CTA Buttons */}
             <motion.div
-              initial={loaded ? { opacity: 0, y: 16 } : false}
+              initial={loaded ? { opacity: 0, y: 24 } : false}
               animate={loaded ? { opacity: 1, y: 0 } : undefined}
-              transition={{ duration: 0.7, delay: 0.5 }}
-              className="mt-6 flex flex-wrap gap-2.5 sm:mt-8 sm:gap-3"
+              transition={{ duration: 0.7, delay: 0.6 }}
+              className="flex flex-wrap gap-3 pt-2 sm:gap-4"
             >
               <Link
                 href="/properties"
-                className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-3 text-sm font-bold text-black shadow-[0_6px_28px_rgba(201,162,39,0.45)] transition hover:brightness-110 sm:px-7 sm:py-3.5"
+                className="group relative inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-gold to-gold-bright px-7 py-3.5 text-sm sm:text-base font-bold text-black shadow-lg shadow-gold/40 transition duration-300 hover:shadow-xl hover:shadow-gold/60 hover:scale-105"
               >
                 استكشف العقارات
-                <ArrowLeft className="h-4 w-4" />
+                <motion.div
+                  animate={{ x: [0, 4, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+                </motion.div>
               </Link>
               <Link
                 href="/contact"
-                className="inline-flex items-center gap-2 rounded-full border border-white/60 bg-white/10 px-5 py-3 text-sm font-medium text-white backdrop-blur-md transition hover:border-gold hover:bg-gold/15 hover:text-gold-bright sm:px-7 sm:py-3.5"
+                className="inline-flex items-center gap-2 rounded-full border-2 border-white/30 bg-white/5 px-7 py-3.5 text-sm sm:text-base font-semibold text-white backdrop-blur-md transition duration-300 hover:border-gold hover:bg-gold/20 hover:text-gold-bright"
               >
-                <Calendar className="h-4 w-4" />
+                <Calendar className="h-4 w-4 sm:h-5 sm:w-5" />
                 احجز استشارة
               </Link>
             </motion.div>
           </div>
 
+          {/* Right Content - Search & Featured */}
           <motion.div
-            initial={loaded ? { opacity: 0, y: 24 } : false}
+            initial={loaded ? { opacity: 0, y: 32 } : false}
             animate={loaded ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.8, delay: 0.75 }}
-            className="min-w-0 w-full lg:col-span-5"
+            className="min-w-0 w-full lg:col-span-5 space-y-4"
           >
-            <div className="min-w-0 overflow-hidden rounded-2xl border border-gold/25 bg-white p-4 shadow-[0_20px_60px_rgba(0,0,0,0.35)] sm:p-5 md:p-6">
-              <p className="mb-4 text-xs font-bold tracking-widest text-gold uppercase">
-                ابحث عن عقارك
+            {/* Search Card */}
+            <motion.div 
+              whileHover={reduceMotion ? undefined : { y: -4 }}
+              className="min-w-0 overflow-hidden rounded-3xl border border-gold/40 bg-gradient-to-br from-white/95 to-white/90 p-6 shadow-2xl backdrop-blur-xl"
+            >
+              <p className="mb-5 text-xs font-bold tracking-widest text-gold uppercase flex items-center gap-2">
+                <Search className="h-3 w-3" />
+                ابحث عن عقارك المثالي
               </p>
-              <div className="space-y-3">
-                <div className="relative">
-                  <MapPin className="absolute top-1/2 start-3 h-4 w-4 -translate-y-1/2 text-gold" />
+              <div className="space-y-4">
+                <div className="relative group">
+                  <MapPin className="absolute top-1/2 start-4 h-4 w-4 -translate-y-1/2 text-gold group-hover:text-gold-bright transition" />
                   <select
                     value={location}
                     onChange={(e) => setLocation(e.target.value)}
-                    className="select-light w-full min-w-0 max-w-full rounded-xl py-3 pe-4 ps-10 text-sm outline-none focus:ring-1 focus:ring-gold"
+                    className="select-light w-full min-w-0 max-w-full rounded-xl py-3.5 pe-4 ps-11 text-sm font-medium outline-none focus:ring-2 focus:ring-gold/50 bg-white/60 hover:bg-white transition"
                   >
                     <option value="">كل المناطق</option>
                     {districts.map((d) => (
@@ -147,12 +189,12 @@ export function Hero() {
                     ))}
                   </select>
                 </div>
-                <div className="relative">
-                  <Home className="absolute top-1/2 start-3 h-4 w-4 -translate-y-1/2 text-gold" />
+                <div className="relative group">
+                  <Home className="absolute top-1/2 start-4 h-4 w-4 -translate-y-1/2 text-gold group-hover:text-gold-bright transition" />
                   <select
                     value={type}
                     onChange={(e) => setType(e.target.value)}
-                    className="select-light w-full min-w-0 max-w-full rounded-xl py-3 pe-4 ps-10 text-sm outline-none focus:ring-1 focus:ring-gold"
+                    className="select-light w-full min-w-0 max-w-full rounded-xl py-3.5 pe-4 ps-11 text-sm font-medium outline-none focus:ring-2 focus:ring-gold/50 bg-white/60 hover:bg-white transition"
                   >
                     <option value="">كل الأنواع</option>
                     {typeOptions.map((o) => (
@@ -164,39 +206,56 @@ export function Hero() {
                 </div>
                 <Link
                   href={`/properties?district=${location}&type=${type}`}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gold py-3 text-sm font-semibold text-black transition hover:brightness-110"
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-gold to-gold-bright py-3.5 text-sm font-bold text-black transition duration-300 hover:shadow-lg hover:shadow-gold/40 active:scale-95"
                 >
                   <Search className="h-4 w-4" />
-                  بحث
+                  بحث الآن
                 </Link>
               </div>
-            </div>
+            </motion.div>
 
+            {/* Featured Property Card */}
             {spotlight && (
-              <Link
-                href={`/properties/${spotlight.slug}`}
-                className="mt-4 block min-w-0 overflow-hidden rounded-2xl border border-gold/20 bg-white p-4 shadow-[0_12px_40px_rgba(0,0,0,0.25)] transition hover:border-gold/50"
+              <motion.div
+                whileHover={reduceMotion ? undefined : { y: -3, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
               >
-                <p className="text-[10px] font-bold tracking-widest text-gold uppercase">
-                  عقار مميز
-                </p>
-                <p className="font-serif mt-1 text-xl font-medium text-[#0a0a0a]">{t(spotlight.title)}</p>
-                <p className="mt-1 text-sm font-bold text-gold">
-                  <Num>{formatPrice(spotlight.price)}</Num>
-                </p>
-              </Link>
+                <Link
+                  href={`/properties/${spotlight.slug}`}
+                  className="group block min-w-0 overflow-hidden rounded-2xl border border-gold/30 bg-gradient-to-br from-white/80 to-white/70 p-4 sm:p-5 shadow-xl backdrop-blur-sm transition hover:border-gold/60 hover:shadow-2xl hover:shadow-gold/20"
+                >
+                  <div className="flex items-start justify-between mb-3">
+                    <p className="text-[10px] font-bold tracking-widest text-gold uppercase flex items-center gap-1.5">
+                      <span className="inline-block h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
+                      عقار مميز
+                    </p>
+                  </div>
+                  <p className="font-serif text-lg sm:text-xl font-bold text-[#0a0a0a] group-hover:text-gold transition line-clamp-2">
+                    {t(spotlight.title)}
+                  </p>
+                  <p className="mt-2 text-base sm:text-lg font-bold text-gold group-hover:text-gold-bright transition">
+                    <Num>{formatPrice(spotlight.price)}</Num>
+                  </p>
+                </Link>
+              </motion.div>
             )}
           </motion.div>
         </div>
-      </motion.div>
 
-      <motion.div
-        animate={{ y: [0, 6, 0] }}
-        transition={{ duration: 2.5, repeat: Infinity }}
-        className="absolute bottom-16 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-1 text-white/45 sm:bottom-20 sm:flex"
-      >
-        <span className="text-[9px] tracking-[0.35em] uppercase">اكتشف</span>
-        <ChevronDown className="h-4 w-4" />
+        {/* Scroll Indicator */}
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 3, repeat: Infinity }}
+          className="absolute bottom-8 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-2 text-white/40 sm:flex"
+        >
+          <span className="text-[10px] tracking-[0.3em] uppercase font-light">اكتشف المزيد</span>
+          <motion.div
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <ChevronDown className="h-5 w-5" />
+          </motion.div>
+        </motion.div>
       </motion.div>
     </section>
   );

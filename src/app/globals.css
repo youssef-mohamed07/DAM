@@ -527,25 +527,34 @@ button {
 .dam-splash-glow {
   background: radial-gradient(
     circle,
-    rgba(201, 162, 39, 0.2) 0%,
-    rgba(201, 162, 39, 0.06) 40%,
-    transparent 70%
+    rgba(201, 162, 39, 0.22) 0%,
+    rgba(201, 162, 39, 0.08) 45%,
+    transparent 72%
   );
-  animation: dam-splash-pulse 3s ease-in-out infinite;
 }
 
-.dam-splash-logo {
-  text-shadow: 0 0 40px rgba(201, 162, 39, 0.2);
+.dam-splash-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
 }
 
-@keyframes dam-splash-pulse {
-  0%,
-  100% {
-    opacity: 0.75;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.06);
-  }
+.dam-splash-headline {
+  font-family: var(--font-cormorant), serif;
+  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.45);
+}
+
+.dam-splash-highlight {
+  background: linear-gradient(120deg, #ffffff 0%, #e8d48a 45%, #c9a227 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 30px rgba(201, 162, 39, 0.35));
+}
+
+.dam-splash-ghost {
+  font-size: clamp(3.5rem, 14vw, 9rem);
+  max-width: 90vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

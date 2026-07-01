@@ -8,6 +8,8 @@ function rowToRep(row: {
   role: string;
   phone: string;
   whatsapp: string;
+  telegramChatId: string | null;
+  telegramUserId: string | null;
   agentId: string | null;
   active: boolean;
 }): SalesRep {
@@ -17,6 +19,8 @@ function rowToRep(row: {
     role: row.role,
     phone: row.phone,
     whatsapp: row.whatsapp,
+    telegramChatId: row.telegramChatId ?? undefined,
+    telegramUserId: row.telegramUserId ?? undefined,
     agentId: row.agentId ?? undefined,
     active: row.active,
   };
@@ -59,6 +63,8 @@ export type SalesRepInput = {
   role: string;
   phone: string;
   whatsapp: string;
+  telegramChatId?: string;
+  telegramUserId?: string;
   agentId?: string;
   active?: boolean;
 };
@@ -72,6 +78,8 @@ export async function createSalesRep(input: SalesRepInput) {
       role: input.role,
       phone: input.phone,
       whatsapp: input.whatsapp,
+      telegramChatId: input.telegramChatId ?? null,
+      telegramUserId: input.telegramUserId ?? null,
       agentId: input.agentId ?? null,
       active: input.active ?? true,
     },
@@ -87,6 +95,12 @@ export async function updateSalesRep(id: string, input: Partial<SalesRepInput>) 
       ...(input.role !== undefined ? { role: input.role } : {}),
       ...(input.phone !== undefined ? { phone: input.phone } : {}),
       ...(input.whatsapp !== undefined ? { whatsapp: input.whatsapp } : {}),
+      ...(input.telegramChatId !== undefined
+        ? { telegramChatId: input.telegramChatId || null }
+        : {}),
+      ...(input.telegramUserId !== undefined
+        ? { telegramUserId: input.telegramUserId || null }
+        : {}),
       ...(input.agentId !== undefined ? { agentId: input.agentId || null } : {}),
       ...(input.active !== undefined ? { active: input.active } : {}),
     },

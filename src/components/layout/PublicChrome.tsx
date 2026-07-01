@@ -21,7 +21,7 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
       <LoadingScreen />
       <div
         className={cn(
-          "w-full max-w-full overflow-x-clip transition-opacity duration-500",
+          "w-full max-w-full overflow-x-clip transition-opacity duration-700 ease-out",
           loaded ? "opacity-100" : "pointer-events-none opacity-0",
         )}
       >

@@ -2,8 +2,6 @@
 
 import { useState, useCallback } from "react";
 import { submitLead } from "@/lib/leads/client";
-import { buildClientToSalesMessage } from "@/lib/leads/messages";
-import { openWhatsApp } from "@/lib/leads/whatsapp";
 import { PropertyInterestModal, type InterestFormData } from "@/components/leads/PropertyInterestModal";
 
 type PropertyRef = {
@@ -29,19 +27,6 @@ export function usePropertyInterest(property: PropertyRef) {
       });
 
       if (!result) throw new Error("failed");
-
-      if (result.assignedRep) {
-        const msg = buildClientToSalesMessage(
-          {
-            propertyTitle: property.title,
-            clientName: data.clientName,
-            clientPhone: data.clientPhone,
-            message: data.message,
-          },
-          result.assignedRep.name,
-        );
-        openWhatsApp(result.assignedRep.whatsapp, msg);
-      }
     },
     [property],
   );

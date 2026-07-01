@@ -2,6 +2,8 @@ export type LeadStatus = "new" | "assigned" | "contacted" | "won" | "lost";
 
 export type LeadSource = "property" | "contact" | "manual";
 
+export type NotifyStatus = "pending" | "sent" | "failed" | "skipped";
+
 export interface Lead {
   id: string;
   createdAt: string;
@@ -22,6 +24,9 @@ export interface Lead {
   assignedSalesId?: string;
   assignedAt?: string;
   notes?: string;
+  notifyStatus?: NotifyStatus;
+  notifiedAt?: string;
+  notifyError?: string;
 }
 
 export interface CreateLeadInput {
@@ -46,6 +51,8 @@ export interface LeadCreateResponse {
     name: string;
     whatsapp: string;
   };
+  /** تم إرسال إشعار تليجرام للمندوب */
+  salesNotified?: boolean;
 }
 
 export interface UpdateLeadInput {

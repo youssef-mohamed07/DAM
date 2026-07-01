@@ -12,7 +12,9 @@
     "db:push": "node --env-file=.env.local -- ./node_modules/.bin/prisma db push",
     "db:migrate": "node --env-file=.env.local -- ./node_modules/.bin/prisma migrate dev",
     "db:studio": "node --env-file=.env.local -- ./node_modules/.bin/prisma studio",
-    "db:seed": "node --env-file=.env.local -- ./node_modules/.bin/tsx prisma/seed.ts"
+    "db:seed": "node --env-file=.env.local -- ./node_modules/.bin/tsx prisma/seed.ts",
+    "telegram:test": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-test.ts",
+    "telegram:sync": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-sync-members.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",

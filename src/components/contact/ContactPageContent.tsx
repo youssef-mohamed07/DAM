@@ -20,8 +20,6 @@ import { districts } from "@/lib/data/districts";
 import { t, cn, formatPhoneIntl, formatPhoneLocal } from "@/lib/utils";
 import { Num } from "@/components/ui/Num";
 import { submitLead } from "@/lib/leads/client";
-import { buildClientToSalesMessage } from "@/lib/leads/messages";
-import { openWhatsApp } from "@/lib/leads/whatsapp";
 
 const goals = [
   { id: "buy", label: "شراء للسكن" },
@@ -110,21 +108,6 @@ export function ContactPageContent({
     });
 
     setSent(true);
-
-    if (result?.assignedRep) {
-      const msg = buildClientToSalesMessage(
-        {
-          propertyTitle,
-          clientName: name,
-          clientPhone: phone,
-          message: buildWhatsAppMessage(),
-        },
-        result.assignedRep.name,
-      );
-      openWhatsApp(result.assignedRep.whatsapp, msg);
-    } else {
-      window.open(whatsappUrl(buildWhatsAppMessage()), "_blank", "noopener,noreferrer");
-    }
   }
 
   return (
@@ -237,9 +220,9 @@ export function ContactPageContent({
                     <div className="flex h-16 w-16 items-center justify-center rounded-full border border-gold/40 bg-gold/15">
                       <CheckCircle2 className="h-8 w-8 text-gold" />
                     </div>
-                    <h2 className="font-serif mt-6 text-2xl text-[#0a0a0a]">تم تجهيز رسالتك</h2>
+                    <h2 className="font-serif mt-6 text-2xl text-[#0a0a0a]">تم إرسال طلبك بنجاح</h2>
                     <p className="mt-3 max-w-sm text-sm text-black/50">
-                      سيتم فتح واتساب لإرسال طلبك. يمكنك أيضاً التواصل مباشرة على{" "}
+                      تم تسجيل بياناتك وإبلاغ مندوب المبيعات تلقائياً. سيتواصل معك على واتساب قريباً على{" "}
                       <Num>{formatPhoneLocal(company.phoneLocal)}</Num>.
                     </p>
                     <button
@@ -395,7 +378,7 @@ export function ContactPageContent({
                         className="group flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-l from-gold to-[#e8d48a] py-4 text-sm font-semibold text-black shadow-[0_8px_32px_rgba(201,162,39,0.4)] transition hover:brightness-110"
                       >
                         <Send className="h-4 w-4 transition group-hover:-translate-x-0.5" />
-                        أرسل عبر واتساب
+                        إرسال الطلب
                       </button>
                       <a
                         href={`mailto:${company.email}?subject=استفسار عقاري - العبور`}

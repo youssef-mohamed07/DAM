@@ -133,7 +133,7 @@ export function PropertyInterestModal({ open, onClose, propertyTitle, onSubmit }
                     ) : (
                       <MessageCircle className="h-4 w-4" />
                     )}
-                    إرسال والتواصل عبر واتساب
+                    إرسال الطلب
                   </button>
                 </form>
               </>

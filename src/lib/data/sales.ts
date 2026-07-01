@@ -6,6 +6,10 @@ export interface SalesRep {
   phone: string;
   /** رقم واتساب بدون + (مثال: 201001234567) */
   whatsapp: string;
+  /** معرّف محادثة تليجرام للمندوب (اختياري) */
+  telegramChatId?: string;
+  /** معرّف المستخدم على تليجرام للمنشن في الجروب */
+  telegramUserId?: string;
   /** ربط تلقائي بعقارات الـ agentId */
   agentId?: string;
   active: boolean;

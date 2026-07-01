@@ -20,6 +20,7 @@ import {
 import { company, whatsappUrl, facebookUrl } from "@/lib/data/company";
 import { IMAGES } from "@/lib/images";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { LogoMark } from "@/components/ui/Logo";
 import { Num } from "@/components/ui/Num";
 import { formatPhoneIntl, formatPhoneLocal } from "@/lib/utils";
 
@@ -39,9 +40,8 @@ export function AboutPageContent() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/60 via-[#0a0a0a]/90 to-[#0a0a0a]" />
         </div>
         <div className="dam-container relative py-16 md:py-24">
-          <p className="text-[11px] font-semibold tracking-[0.4em] text-gold uppercase">
-            DAM Properties
-          </p>
+          <LogoMark size="md" priority className="mb-6" />
+          <p className="sr-only">DAM Properties</p>
           <h1 className="font-serif mt-4 max-w-3xl text-balance text-3xl leading-tight text-white sm:text-4xl md:text-6xl">
             {company.about.headline}
           </h1>

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Lock, User, Eye, EyeOff, Shield } from "lucide-react";
+import { LogoMark } from "@/components/ui/Logo";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -53,10 +54,9 @@ export default function AdminLoginPage() {
         className="relative w-full max-w-md"
       >
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl border border-gold/30 bg-gold/10 font-serif text-xl text-gold shadow-[0_0_40px_rgba(201,162,39,0.2)]">
-            D
+          <div className="mx-auto mb-4 flex justify-center">
+            <LogoMark size="xl" priority />
           </div>
-          <h1 className="font-serif text-2xl tracking-[0.2em] text-white">DAM</h1>
           <p className="mt-2 text-sm text-white/45">لوحة التحكم — دخول المسؤولين فقط</p>
         </div>
 
