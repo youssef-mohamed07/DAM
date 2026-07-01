@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum LeadStatus {
+  new
+  assigned
+  contacted
+  won
+  lost
+}
+
+enum LeadSource {
+  property
+  contact
+  manual
+}
+
+model Lead {
+  id              String     @id @default(uuid()) @db.Uuid
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @updatedAt @map("updated_at")
+  status          LeadStatus @default(new)
+  source          LeadSource
+  propertyId      String?    @map("property_id")
+  propertySlug    String?    @map("property_slug")
+  propertyTitle   String?    @map("property_title")
+  clientName      String?    @map("client_name")
+  clientPhone     String?    @map("client_phone")
+  clientEmail     String?    @map("client_email")
+  message         String?
+  goal            String?
+  propertyType    String?    @map("property_type")
+  budget          String?
+  district        String?
+  assignedSalesId String?    @map("assigned_sales_id")
+  assignedAt      DateTime?  @map("assigned_at")
+  notes           String?
+
+  @@index([createdAt(sort: Desc)])
+  @@index([status])
+  @@index([propertyId])
+  @@index([assignedSalesId])
+  @@map("leads")
+}
+
+model Property {
+  id            String   @id
+  slug          String   @unique
+  titleAr       String   @map("title_ar")
+  titleEn       String   @map("title_en")
+  district      String
+  type          String
+  price         Int
+  area          Int
+  bedrooms      Int
+  bathrooms     Int
+  finishingAr   String   @map("finishing_ar")
+  finishingEn   String   @default("") @map("finishing_en")
+  delivery      String   @default("Ready")
+  parking       Int      @default(0)
+  garden        Boolean  @default(false)
+  roi           Float    @default(0)
+  featured      Boolean  @default(false)
+  published     Boolean  @default(true)
+  tags          Json     @default("[]")
+  images        Json     @default("[]")
+  descriptionAr String   @map("description_ar") @db.Text
+  descriptionEn String   @default("") @map("description_en") @db.Text
+  amenities     Json     @default("[]")
+  lat           Float    @default(30.18)
+  lng           Float    @default(31.47)
+  agentId       String   @map("agent_id")
+  video         String?
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([published])
+  @@index([featured])
+  @@index([district])
+  @@map("properties")
+}
+
+model SalesRep {
+  id        String   @id
+  name      String
+  role      String
+  phone     String
+  whatsapp  String
+  agentId   String?  @map("agent_id")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("sales_reps")
+}
