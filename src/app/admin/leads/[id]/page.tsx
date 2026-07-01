@@ -218,7 +218,7 @@ export default function AdminLeadDetailPage({
               <select
                 value={salesId}
                 onChange={(e) => setSalesId(e.target.value)}
-                className="dam-contact-input min-w-[180px] flex-1 text-sm"
+                className="dam-contact-input min-w-0 flex-1 text-sm sm:min-w-[180px]"
               >
                 <option value="">اختر مندوباً</option>
                 {reps.filter((r) => r.active).map((r) => (
@@ -301,7 +301,7 @@ export default function AdminLeadDetailPage({
             <select
               value={waTemplate}
               onChange={(e) => setWaTemplate(e.target.value as WhatsAppTemplate)}
-              className="dam-contact-input min-w-[140px] flex-1 text-sm"
+              className="dam-contact-input min-w-0 flex-1 text-sm sm:min-w-[140px]"
             >
               {(Object.keys(templateLabels) as WhatsAppTemplate[])
                 .filter((k) => k !== "assign_sales")

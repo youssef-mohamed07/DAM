@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Cairo } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Cairo, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/providers/AppProvider";
 import { PropertiesProvider } from "@/providers/PropertiesProvider";
@@ -12,6 +12,18 @@ const cairo = Cairo({
   weight: ["400", "500", "600", "700"],
   variable: "--font-cairo",
 });
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+  variable: "--font-cormorant",
+});
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#080808",
+};
 
 export const metadata: Metadata = {
   title: `${company.name} | ${company.tagline}`,
@@ -30,7 +42,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={`${cairo.variable} min-h-screen font-[family-name:var(--font-cairo)]`}>
+      <body className={`${cairo.variable} ${cormorant.variable} min-h-screen font-[family-name:var(--font-cairo)] antialiased`}>
         <AppProvider>
           <PropertiesProvider>
             <FavoritesProvider>

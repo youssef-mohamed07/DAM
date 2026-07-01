@@ -24,13 +24,13 @@ export function SectionHeader({
   const centered = align === "center";
   const titleSize =
     size === "large"
-      ? "text-4xl md:text-5xl lg:text-[3.25rem]"
-      : "text-3xl md:text-[2.75rem]";
+      ? "text-2xl sm:text-4xl md:text-5xl lg:text-[3.25rem]"
+      : "text-2xl sm:text-3xl md:text-[2.75rem]";
   const onDark = inverted;
 
   return (
     <header className={`${centered ? "text-center" : ""} ${className}`}>
-      <p className="text-[11px] font-semibold tracking-[0.35em] text-gold uppercase">
+      <p className="text-[10px] font-semibold tracking-[0.2em] text-gold uppercase sm:text-[11px] sm:tracking-[0.3em]">
         {label.ar}
       </p>
       <h2

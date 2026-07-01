@@ -102,7 +102,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   );
 
   return (
-    <div className="flex min-h-screen admin-main-bg">
+    <div className="flex min-h-screen w-full max-w-full overflow-x-clip admin-main-bg">
       <aside className="hidden w-64 shrink-0 bg-[#0c0c0c] lg:block">{Sidebar}</aside>
 
       {mobileOpen ? (
@@ -113,7 +113,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       ) : null}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-40 flex items-center justify-between border-b border-black/8 bg-white/90 px-4 py-3 backdrop-blur-md lg:px-8">
+        <header className="sticky top-0 z-40 flex min-w-0 items-center justify-between border-b border-black/8 bg-white/90 px-3 py-3 backdrop-blur-md sm:px-4 lg:px-8">
           <div className="flex items-center gap-3">
             <button type="button" className="rounded-lg border border-black/10 p-2 lg:hidden" onClick={() => setMobileOpen(true)} aria-label="القائمة">
               <Menu className="h-5 w-5" />
@@ -137,7 +137,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
 
-        <main className="flex-1 p-4 lg:p-8">{children}</main>
+        <main className="min-w-0 flex-1 overflow-x-clip p-3 sm:p-4 lg:p-8">{children}</main>
       </div>
     </div>
   );

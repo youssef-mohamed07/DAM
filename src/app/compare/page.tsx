@@ -22,7 +22,7 @@ export default function ComparePage() {
 
   if (!compare.length) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-white px-6 pt-24 text-center">
+      <div className="flex min-h-screen w-full max-w-full flex-col items-center justify-center overflow-x-clip bg-white px-4 pt-24 text-center sm:px-6">
         <h1 className="font-serif text-4xl text-[#0a0a0a]">مقارنة العقارات</h1>
         <p className="mt-4 text-black/50">أضف عقارات للمقارنة</p>
         <Link href="/properties" className="mt-8 rounded-full bg-gold px-8 py-3 font-semibold text-black">
@@ -33,10 +33,10 @@ export default function ComparePage() {
   }
 
   return (
-    <div className="min-h-screen bg-white pt-32 pb-20">
-      <div className="mx-auto max-w-7xl overflow-x-auto px-6">
-        <div className="mb-8 flex items-center justify-between">
-          <h1 className="font-serif text-4xl text-[#0a0a0a]">مقارنة</h1>
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-white pt-28 pb-16 sm:pt-32 sm:pb-20">
+      <div className="dam-container overflow-x-auto">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 sm:mb-8">
+          <h1 className="font-serif text-2xl text-[#0a0a0a] sm:text-3xl md:text-4xl">مقارنة</h1>
           <button type="button" onClick={clearCompare} className="text-sm text-gold">
             مسح الكل
           </button>

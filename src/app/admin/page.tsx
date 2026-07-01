@@ -89,7 +89,7 @@ export default function AdminPage() {
       </div>
 
       <div className="grid gap-6 xl:grid-cols-3">
-        <div className="dam-card-elevated rounded-2xl p-6 xl:col-span-2">
+        <div className="dam-card-elevated min-w-0 rounded-2xl p-4 sm:p-6 xl:col-span-2">
           <h2 className="font-semibold text-[#0a0a0a]">توزيع العملاء حسب الحالة</h2>
           <div className="mt-6 h-64">
             {stats && stats.total > 0 ? (
@@ -110,7 +110,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        <div className="dam-card-elevated rounded-2xl p-6">
+        <div className="dam-card-elevated min-w-0 rounded-2xl p-4 sm:p-6">
           <h2 className="font-semibold text-[#0a0a0a]">الحالات</h2>
           <div className="mt-4 h-52">
             {stats && stats.total > 0 ? (

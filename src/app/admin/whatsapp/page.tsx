@@ -213,7 +213,7 @@ export default function AdminWhatsAppPage() {
             {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Shuffle className="h-4 w-4" />}
             توزيع تلقائي ({unassigned.length})
           </button>
-          <select value={assignRepId} onChange={(e) => setAssignRepId(e.target.value)} className="dam-contact-input text-sm">
+          <select value={assignRepId} onChange={(e) => setAssignRepId(e.target.value)} className="dam-contact-input w-full min-w-0 text-sm sm:w-auto">
             {reps.filter((r) => r.active).map((r) => (
               <option key={r.id} value={r.id}>{r.name}</option>
             ))}

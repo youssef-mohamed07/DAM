@@ -23,6 +23,7 @@ import {
 } from "@/lib/data/districts";
 import { company, whatsappUrl } from "@/lib/data/company";
 import { t, cn } from "@/lib/utils";
+import { useApp } from "@/providers/AppProvider";
 
 const navLinks = [
   { href: "/properties", label: "العقارات", mega: true },
@@ -33,6 +34,7 @@ const navLinks = [
 ];
 
 export function Navbar() {
+  const { loaded } = useApp();
   const pathname = usePathname();
   const { compare } = useCompare();
   const [scrolled, setScrolled] = useState(false);
@@ -57,22 +59,24 @@ export function Navbar() {
   return (
     <>
       <motion.header
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        initial={false}
+        animate={loaded ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
-          "fixed inset-x-0 z-50 px-4 transition-all duration-500",
-          scrolled ? "top-2 md:top-3" : "top-4 md:top-5",
+          "fixed inset-x-0 z-50 w-full max-w-full transition-all duration-500",
+          scrolled ? "top-2 md:top-3" : "top-3 md:top-5",
+          "pt-[env(safe-area-inset-top)]",
         )}
         onMouseLeave={() => setMega(false)}
       >
-        <div
-          className={cn(
-            "dam-nav-shell dam-container !max-w-5xl !px-3 !py-2 transition-all duration-500 md:!px-4",
-            scrolled && "dam-nav-scrolled",
-            isHomeHero && "dam-nav-hero",
-          )}
-        >
+        <div className="mx-auto w-full max-w-5xl px-3 sm:px-4">
+          <div
+            className={cn(
+              "dam-nav-shell px-3 py-2 transition-all duration-500 md:px-4",
+              scrolled && "dam-nav-scrolled",
+              isHomeHero && "dam-nav-hero",
+            )}
+          >
           <div className="flex items-center justify-between gap-3">
             <Link href="/" className="group relative flex shrink-0 items-center gap-2.5 ps-1">
               <div className="relative flex h-9 w-9 items-center justify-center rounded-full border border-gold/50 bg-gold/10 font-serif text-sm text-gold shadow-[0_0_20px_rgba(201,162,39,0.15)] transition group-hover:border-gold group-hover:bg-gold group-hover:text-black">
@@ -83,7 +87,7 @@ export function Navbar() {
                 <div className="text-gradient-gold font-serif text-base tracking-[0.2em]">DAM</div>
                 <div
                   className={cn(
-                    "text-[7px] tracking-[0.4em]",
+                    "text-[9px] tracking-[0.3em] sm:text-[10px] sm:tracking-[0.35em]",
                     isHomeHero ? "text-white/50" : "text-black/40",
                   )}
                 >
@@ -172,6 +176,7 @@ export function Navbar() {
               {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
+          </div>
         </div>
 
         <AnimatePresence>
@@ -182,7 +187,7 @@ export function Navbar() {
               exit={{ opacity: 0, y: -8, scale: 0.98 }}
               transition={{ duration: 0.25 }}
               onMouseEnter={() => setMega(true)}
-              className="dam-container !max-w-5xl pt-3"
+              className="mx-auto w-full max-w-5xl px-3 pt-3 sm:px-4"
             >
               <div className="dam-nav-shell dam-nav-scrolled overflow-hidden rounded-3xl !rounded-[1.75rem]">
                 <div className="grid gap-0 md:grid-cols-2">
@@ -261,7 +266,7 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-white/90 backdrop-blur-md pt-24 lg:hidden"
+            className="fixed inset-0 z-40 overflow-y-auto bg-white/95 backdrop-blur-md pt-[calc(5.5rem+env(safe-area-inset-top))] pb-[env(safe-area-inset-bottom)] lg:hidden"
           >
             <nav className="dam-container flex flex-col gap-2">
               {navLinks.map((link, i) => (

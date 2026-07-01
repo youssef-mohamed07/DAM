@@ -22,10 +22,12 @@ function PropertiesContent() {
   }, [searchParams, properties]);
 
   return (
-    <div className="min-h-screen bg-white pt-32 pb-20">
-      <div className="mx-auto max-w-7xl px-6">
-        <h1 className="font-serif text-5xl text-[#0a0a0a] md:text-6xl">العقارات</h1>
-        <p className="mt-4 text-black/50">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-white pt-28 pb-16 sm:pt-32 sm:pb-20">
+      <div className="dam-container">
+        <h1 className="font-serif text-3xl text-[#0a0a0a] sm:text-4xl md:text-5xl lg:text-6xl">
+          العقارات
+        </h1>
+        <p className="mt-3 text-sm text-black/50 sm:mt-4 sm:text-base">
           {loading ? "…" : `${filtered.length} عقار`} · مدينة العبور
         </p>
 

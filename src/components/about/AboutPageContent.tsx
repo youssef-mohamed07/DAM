@@ -31,7 +31,7 @@ function districtHref(id: string) {
 
 export function AboutPageContent() {
   return (
-    <div className="min-h-screen bg-white pt-24">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-white pt-24">
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-white/8">
         <div className="absolute inset-0">
@@ -42,7 +42,7 @@ export function AboutPageContent() {
           <p className="text-[11px] font-semibold tracking-[0.4em] text-gold uppercase">
             DAM Properties
           </p>
-          <h1 className="font-serif mt-4 max-w-3xl text-4xl leading-tight text-white md:text-6xl">
+          <h1 className="font-serif mt-4 max-w-3xl text-balance text-3xl leading-tight text-white sm:text-4xl md:text-6xl">
             {company.about.headline}
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/60">
@@ -88,7 +88,7 @@ export function AboutPageContent() {
               <Image src={IMAGES.pool} alt="" fill className="object-cover" sizes="50vw" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6">
-                <p className="text-sm text-black/70">{company.address}</p>
+                <p className="text-sm text-white/80">{company.address}</p>
                 <p className="text-xs text-white/45">{company.addressDetail}</p>
               </div>
             </div>

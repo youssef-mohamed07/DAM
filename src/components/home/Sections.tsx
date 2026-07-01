@@ -55,11 +55,11 @@ export function FeaturedProperties() {
           </Link>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-12">
-          <div className="lg:col-span-7">
+        <div className="grid min-w-0 gap-6 lg:grid-cols-12">
+          <div className="min-w-0 lg:col-span-7">
             {hero && <PropertyCard property={hero} variant="hero" />}
           </div>
-          <div className="flex flex-col gap-4 lg:col-span-5">
+          <div className="flex min-w-0 flex-col gap-4 lg:col-span-5">
             {rest.slice(0, 3).map((p, i) => (
               <PropertyCard key={p.id} property={p} variant="compact" index={i} />
             ))}

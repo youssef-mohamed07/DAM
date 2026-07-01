@@ -35,12 +35,12 @@ const items = [
 
 export function TrustBar() {
   return (
-    <section className="relative z-20 -mt-14 bg-white pb-4 md:-mt-16">
+    <section className="relative z-20 -mt-10 w-full max-w-full overflow-x-clip bg-white pb-4 sm:-mt-14 md:-mt-16">
       <div className="dam-container">
-        <div className="dam-trust-bar grid grid-cols-2 overflow-hidden rounded-2xl lg:grid-cols-4">
+        <div className="dam-trust-bar grid grid-cols-2 overflow-hidden rounded-xl sm:rounded-2xl lg:grid-cols-4">
           {items.map((item, i) => {
             const Icon = item.icon;
-            const className = `group flex flex-col gap-1 px-5 py-5 transition hover:bg-gold/5 ${
+            const className = `group flex flex-col gap-1 px-3 py-4 transition hover:bg-gold/5 sm:px-5 sm:py-5 ${
               i > 0 ? "border-t border-black/6 lg:border-t-0 lg:border-s lg:border-black/6" : ""
             } ${i === 1 ? "border-s border-black/6 lg:border-s-0" : ""}`;
             const inner = (

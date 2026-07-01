@@ -128,14 +128,14 @@ export function ContactPageContent({
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-white pt-24">
+    <div className="relative min-h-screen w-full max-w-full overflow-x-clip bg-white pt-24">
       <div className="pointer-events-none absolute -start-32 top-20 h-96 w-96 rounded-full bg-gold/10 blur-3xl" />
       <div className="pointer-events-none absolute -end-24 bottom-0 h-80 w-80 rounded-full bg-gold/8 blur-3xl" />
 
       <div className="dam-container relative pb-20 pt-8 md:pb-28 md:pt-12">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+        <div className="grid min-w-0 gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Copy */}
-          <div className="lg:col-span-5">
+          <div className="min-w-0 lg:col-span-5">
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               animate={{ opacity: 1, y: 0 }}
@@ -221,9 +221,9 @@ export function ContactPageContent({
             initial={{ opacity: 0, y: 32 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.15 }}
-            className="lg:col-span-7"
+            className="min-w-0 lg:col-span-7"
           >
-            <div className="dam-contact-form relative overflow-hidden rounded-[2rem] p-6 md:p-10">
+            <div className="dam-contact-form relative min-w-0 overflow-hidden rounded-[2rem] p-5 sm:p-6 md:p-10">
               <div className="pointer-events-none absolute -end-20 -top-20 h-48 w-48 rounded-full bg-gold/15 blur-3xl" />
 
               <AnimatePresence mode="wait">

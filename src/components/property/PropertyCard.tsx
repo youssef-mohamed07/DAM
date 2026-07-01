@@ -34,7 +34,7 @@ export function PropertyCard({ property, index = 0, variant = "default" }: Prope
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.6 }}
-        className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.02]"
+        className="group dam-card-elevated overflow-hidden rounded-2xl"
       >
         <Link href={`/properties/${property.slug}`} className="block">
           <div className="relative aspect-[4/3] overflow-hidden lg:aspect-[16/11]">

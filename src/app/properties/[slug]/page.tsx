@@ -56,26 +56,26 @@ export default function PropertyDetailPage({
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${property.lat},${property.lng}`;
 
   return (
-    <div className="min-h-screen bg-white pt-24">
-      <div className="relative h-[70vh]">
-        <Image src={property.images[0]} alt="" fill className="object-cover" priority />
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-white pt-24 sm:pt-28">
+      <div className="relative h-[50svh] min-h-[280px] sm:h-[60svh] md:h-[70vh]">
+        <Image src={property.images[0]} alt="" fill className="object-cover" priority sizes="100vw" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0B0B0B] via-black/30 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 p-8 md:p-16">
+        <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8 md:p-16">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
-            <p className="text-xs tracking-[0.4em] text-gold uppercase">
+            <p className="text-[10px] tracking-[0.3em] text-gold uppercase sm:text-xs sm:tracking-[0.4em]">
               {propertyTypeLabel(property.type)} · {districtLabel(property.district)}
             </p>
-            <h1 className="font-serif mt-2 text-4xl text-white md:text-6xl">
+            <h1 className="font-serif mt-2 text-balance text-2xl text-white sm:text-3xl md:text-4xl lg:text-6xl">
               {t(property.title)}
             </h1>
-            <p className="mt-4 text-3xl font-semibold text-gold">
+            <p className="mt-3 text-xl font-semibold text-gold sm:mt-4 sm:text-2xl md:text-3xl">
               {formatPrice(property.price)}
             </p>
           </motion.div>
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-6 py-12">
+      <div className="dam-container py-8 sm:py-12">
         <div className="flex flex-wrap gap-3">
           {[
             { icon: Heart, action: () => toggleFavorite(property.id), active: isFavorite(property.id), label: "مفضلة" },

@@ -15,11 +15,11 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 
 export function MarketPageContent() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen w-full max-w-full overflow-x-clip bg-white">
       <section className="border-b border-black/8 pt-24">
         <div className="dam-container dam-section-gap">
           <p className="text-[11px] font-semibold tracking-[0.4em] text-gold uppercase">السوق</p>
-          <h1 className="font-serif mt-4 max-w-3xl text-4xl text-[#0a0a0a] md:text-6xl">
+          <h1 className="font-serif mt-4 max-w-3xl text-balance text-3xl text-[#0a0a0a] sm:text-4xl md:text-6xl">
             مؤشرات سوق العبور ٢٠٢٥–٢٠٢٦
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-[#0a0a0a]/55">

@@ -34,13 +34,31 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
+  width: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   background: var(--white);
   color: var(--black);
   font-family: var(--font-cairo), system-ui, sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
+  width: 100%;
+  max-width: 100%;
+}
+
+img,
+video,
+svg {
+  max-width: 100%;
+}
+
+select,
+input,
+textarea,
+button {
+  max-width: 100%;
 }
 
 .font-serif {
@@ -198,8 +216,16 @@ body {
 
 .dam-container {
   margin-inline: auto;
+  width: 100%;
   max-width: 80rem;
-  padding-inline: 1.5rem;
+  min-width: 0;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 640px) {
+  .dam-container {
+    padding-inline: 1.5rem;
+  }
 }
 
 @media (min-width: 768px) {
@@ -209,8 +235,9 @@ body {
 }
 
 .dam-section {
-  padding-block: 5rem;
+  padding-block: 4rem;
   position: relative;
+  overflow-x: clip;
 }
 
 @media (min-width: 768px) {
@@ -417,6 +444,9 @@ body {
   background-color: var(--ivory);
   color: var(--black);
   border: 1px solid rgba(0, 0, 0, 0.08);
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .select-light option {
