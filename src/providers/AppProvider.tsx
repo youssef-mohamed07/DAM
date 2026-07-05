@@ -16,6 +16,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
+    try {
+      if (sessionStorage.getItem("dam-splash-seen") === "1") {
+        setLoaded(true);
+      }
+    } catch {
+      setLoaded(true);
+    }
+  }, []);
+
+  useEffect(() => {
     document.documentElement.lang = "ar";
     document.documentElement.dir = "rtl";
   }, []);

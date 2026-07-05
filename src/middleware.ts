@@ -5,6 +5,13 @@ import { COOKIE, verifySessionToken } from "@/lib/auth/session";
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // روابط قديمة /en من مشروع تاني أو history المتصفح
+  if (pathname === "/en" || pathname.startsWith("/en/")) {
+    const url = request.nextUrl.clone();
+    url.pathname = pathname.replace(/^\/en\/?/, "/") || "/";
+    return NextResponse.redirect(url);
+  }
+
   if (pathname === "/admin/login") {
     const token = request.cookies.get(COOKIE)?.value;
     if (token && (await verifySessionToken(token))) {
@@ -45,5 +52,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/leads/:path*", "/api/admin/:path*"],
+  matcher: ["/en", "/en/:path*", "/admin/:path*", "/api/leads/:path*", "/api/admin/:path*"],
 };
