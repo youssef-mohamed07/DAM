@@ -8,8 +8,9 @@ import type { Property } from "@/types";
 import { useFavorites, useCompare } from "@/providers/FavoritesProvider";
 import { usePropertyInterest } from "@/components/leads/usePropertyInterest";
 import { formatPrice } from "@/lib/data/properties";
-import { t } from "@/lib/utils";
+import { saleCategoryLabel, formatPaymentPlan } from "@/lib/properties/sale-category";
 import { Num } from "@/components/ui/Num";
+import { useLocale } from "@/providers/LocaleProvider";
 
 interface PropertyCardProps {
   property: Property;
@@ -18,6 +19,7 @@ interface PropertyCardProps {
 }
 
 export function PropertyCard({ property, index = 0, variant = "default" }: PropertyCardProps) {
+  const { t, path, dict, locale } = useLocale();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { addToCompare } = useCompare();
   const { open: openInterest, modal: interestModal } = usePropertyInterest({
@@ -26,6 +28,9 @@ export function PropertyCard({ property, index = 0, variant = "default" }: Prope
     title: t(property.title),
   });
   const fav = isFavorite(property.id);
+
+  const paymentPlan = formatPaymentPlan(property, locale);
+  const categoryLabel = saleCategoryLabel(property.saleCategory, locale);
 
   if (variant === "hero") {
     return (
@@ -36,7 +41,7 @@ export function PropertyCard({ property, index = 0, variant = "default" }: Prope
         transition={{ duration: 0.6 }}
         className="group dam-card-elevated overflow-hidden rounded-2xl"
       >
-        <Link href={`/properties/${property.slug}`} className="block">
+        <Link href={path(`/properties/${property.slug}`)} className="block">
           <div className="relative aspect-[4/3] overflow-hidden lg:aspect-[16/11]">
             <Image
               src={property.images[0]}
@@ -47,33 +52,39 @@ export function PropertyCard({ property, index = 0, variant = "default" }: Prope
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-            <div className="absolute start-5 top-5 flex gap-2">
+            <div className="absolute start-5 top-5 flex flex-wrap gap-2">
+              <span className="rounded-full bg-white px-3 py-1 text-[10px] font-bold tracking-wider text-black uppercase">
+                {categoryLabel}
+              </span>
               {property.tags.slice(0, 1).map((tag) => (
                 <span
                   key={tag.en}
-                  className="rounded-full bg-gold px-3 py-1 text-[10px] font-bold tracking-wider text-black uppercase"
+                  className="rounded-full bg-white px-3 py-1 text-[10px] font-bold tracking-wider text-black uppercase"
                 >
                   {t(tag)}
                 </span>
               ))}
             </div>
             <div className="absolute inset-x-0 bottom-0 p-6 md:p-8">
-              <p className="text-xs tracking-widest text-gold uppercase">مميز</p>
+              <p className="text-xs tracking-widest text-white/80 uppercase">{dict.featured}</p>
               <h3 className="font-serif mt-2 text-3xl text-white md:text-4xl">
                 {t(property.title)}
               </h3>
-              <p className="mt-3 text-2xl font-medium text-gold">
+              <p className="mt-3 text-2xl font-medium text-white">
                 <Num>{formatPrice(property.price)}</Num>
               </p>
+              {paymentPlan ? (
+                <p className="mt-2 text-sm text-white/75">{paymentPlan}</p>
+              ) : null}
               <div className="mt-4 flex flex-wrap gap-4 text-sm text-white/60">
                 <span className="flex items-center gap-1.5">
-                  <Bed className="h-4 w-4 text-gold" /> {property.bedrooms} غرف
+                  <Bed className="h-4 w-4 text-white/80" /> {property.bedrooms} {dict.bedrooms}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Bath className="h-4 w-4 text-gold" /> {property.bathrooms} حمام
+                  <Bath className="h-4 w-4 text-white/80" /> {property.bathrooms} {dict.bathrooms}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Maximize className="h-4 w-4 text-gold" /> {property.area} م²
+                  <Maximize className="h-4 w-4 text-white/80" /> {property.area} {dict.sqm}
                 </span>
               </div>
             </div>
@@ -95,7 +106,7 @@ export function PropertyCard({ property, index = 0, variant = "default" }: Prope
         transition={{ duration: 0.5, delay: index * 0.08 }}
         className="group dam-card overflow-hidden rounded-xl"
       >
-        <Link href={`/properties/${property.slug}`} className="flex gap-4 p-3">
+        <Link href={path(`/properties/${property.slug}`)} className="flex gap-4 p-3">
           <div className="relative h-24 w-28 shrink-0 overflow-hidden rounded-lg">
             <Image
               src={property.images[0]}
@@ -111,7 +122,11 @@ export function PropertyCard({ property, index = 0, variant = "default" }: Prope
               <Num>{formatPrice(property.price)}</Num>
             </p>
             <p className="mt-1 text-xs text-black/45">
-              {property.bedrooms} غرف · {property.area} م²
+              {categoryLabel}
+              {paymentPlan ? ` · ${paymentPlan}` : ""}
+            </p>
+            <p className="mt-1 text-xs text-black/45">
+              {property.bedrooms} {dict.bedrooms} · {property.area} {dict.sqm}
             </p>
           </div>
           <ArrowUpLeft className="mt-1 h-4 w-4 shrink-0 text-black/30 transition group-hover:text-gold" />
@@ -128,7 +143,7 @@ export function PropertyCard({ property, index = 0, variant = "default" }: Prope
       transition={{ duration: 0.55, delay: index * 0.07 }}
       className="group dam-card overflow-hidden rounded-2xl"
     >
-      <Link href={`/properties/${property.slug}`}>
+      <Link href={path(`/properties/${property.slug}`)}>
         <div className="relative aspect-[4/3] overflow-hidden">
           <Image
             src={property.images[0]}
@@ -138,9 +153,12 @@ export function PropertyCard({ property, index = 0, variant = "default" }: Prope
             sizes="(max-width: 768px) 100vw, 33vw"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent" />
-          <div className="absolute start-4 top-4">
+          <div className="absolute start-4 top-4 flex flex-wrap gap-2">
+            <span className="rounded-full bg-white px-2.5 py-1 text-[10px] font-bold tracking-wider text-black uppercase">
+              {categoryLabel}
+            </span>
             {property.tags[0] && (
-              <span className="rounded-full bg-gold/95 px-2.5 py-1 text-[10px] font-bold tracking-wider text-black uppercase">
+              <span className="rounded-full bg-black/95 px-2.5 py-1 text-[10px] font-bold tracking-wider text-white uppercase">
                 {t(property.tags[0])}
               </span>
             )}
@@ -150,6 +168,11 @@ export function PropertyCard({ property, index = 0, variant = "default" }: Prope
             <p className="mt-1 text-lg font-medium text-gold">
               <Num>{formatPrice(property.price)}</Num>
             </p>
+            {paymentPlan ? (
+              <p className="mt-1 text-xs text-white/70">{paymentPlan}</p>
+            ) : (
+              <p className="mt-1 text-xs text-white/70">{dict.propertiesPage.cashSale}</p>
+            )}
           </div>
         </div>
       </Link>
@@ -179,7 +202,7 @@ export function PropertyCard({ property, index = 0, variant = "default" }: Prope
             type="button"
             aria-label="المفضلة"
             onClick={() => toggleFavorite(property.id)}
-            className={`rounded-full p-2 transition ${fav ? "bg-gold text-black" : "text-black/40 hover:bg-black/5 hover:text-black"}`}
+            className={`rounded-full p-2 transition ${fav ? "bg-gold text-white" : "text-white/40 hover:bg-black/5 hover:text-white"}`}
           >
             <Heart className={`h-3.5 w-3.5 ${fav ? "fill-current" : ""}`} />
           </button>

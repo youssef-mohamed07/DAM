@@ -15,12 +15,14 @@ export async function listLeads(filters?: {
   status?: string;
   propertyId?: string;
   assignedSalesId?: string;
+  source?: string;
 }) {
   const rows = await prisma.lead.findMany({
     where: {
       ...(filters?.status ? { status: filters.status as PrismaLeadStatus } : {}),
       ...(filters?.propertyId ? { propertyId: filters.propertyId } : {}),
       ...(filters?.assignedSalesId ? { assignedSalesId: filters.assignedSalesId } : {}),
+      ...(filters?.source ? { source: filters.source as import("@prisma/client").LeadSource } : {}),
     },
     orderBy: { createdAt: "desc" },
   });
@@ -54,6 +56,8 @@ export async function createLead(input: CreateLeadInput): Promise<LeadCreateResp
     }
   }
 
+  const combinedNotes = [input.notes, notes].filter(Boolean).join("\n\n") || undefined;
+
   const settings = await getSystemSettings();
   const rep = settings.autoAssign
     ? await pickSalesRepForLead({ propertyAgentId })
@@ -76,7 +80,7 @@ export async function createLead(input: CreateLeadInput): Promise<LeadCreateResp
       propertyType,
       budget: input.budget,
       district,
-      notes: notes || undefined,
+      notes: combinedNotes,
       assignedSalesId,
       assignedAt: assignedSalesId ? new Date() : undefined,
       notifyStatus: rep ? "pending" : undefined,
@@ -194,10 +198,15 @@ export async function resendLeadNotification(leadId: string) {
 }
 
 export async function getLeadStats() {
-  const [total, grouped, recent] = await Promise.all([
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+
+  const [total, grouped, sourceGrouped, recent, todayCount] = await Promise.all([
     prisma.lead.count(),
     prisma.lead.groupBy({ by: ["status"], _count: { _all: true } }),
-    prisma.lead.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
+    prisma.lead.groupBy({ by: ["source"], _count: { _all: true } }),
+    prisma.lead.findMany({ orderBy: { createdAt: "desc" }, take: 8 }),
+    prisma.lead.count({ where: { createdAt: { gte: startOfToday } } }),
   ]);
 
   const byStatus = {
@@ -223,9 +232,21 @@ export async function getLeadStats() {
     if (g.propertyId) byProperty[g.propertyId] = g._count._all;
   }
 
+  const bySource: Record<string, number> = {
+    property: 0,
+    contact: 0,
+    manual: 0,
+    hero: 0,
+  };
+  for (const g of sourceGrouped) {
+    bySource[g.source] = g._count._all;
+  }
+
   return {
     total,
+    todayCount,
     byStatus,
+    bySource,
     byProperty,
     recent: recent.map(prismaToLead),
   };

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Cairo, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/providers/AppProvider";
+import { LocaleProvider } from "@/providers/LocaleProvider";
 import { PropertiesProvider } from "@/providers/PropertiesProvider";
 import { FavoritesProvider, CompareProvider } from "@/providers/FavoritesProvider";
 import { PublicChrome } from "@/components/layout/PublicChrome";
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: company.name,
     description: company.tagline,
-    images: [{ url: LOGO_SRC, width: 1254, height: 1254, alt: LOGO_ALT }],
+    images: [{ url: LOGO_SRC, width: 500, height: 500, alt: LOGO_ALT }],
   },
   twitter: {
     card: "summary",
@@ -62,16 +63,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ar" dir="rtl">
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
       <body className={`${cairo.variable} ${cormorant.variable} min-h-screen font-[family-name:var(--font-cairo)] antialiased`}>
         <AppProvider>
-          <PropertiesProvider>
-            <FavoritesProvider>
-              <CompareProvider>
-                <PublicChrome>{children}</PublicChrome>
-              </CompareProvider>
-            </FavoritesProvider>
-          </PropertiesProvider>
+          <LocaleProvider>
+            <PropertiesProvider>
+              <FavoritesProvider>
+                <CompareProvider>
+                  <PublicChrome>{children}</PublicChrome>
+                </CompareProvider>
+              </FavoritesProvider>
+            </PropertiesProvider>
+          </LocaleProvider>
         </AppProvider>
       </body>
     </html>

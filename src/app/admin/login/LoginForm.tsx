@@ -44,7 +44,7 @@ export default function AdminLoginPage() {
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#080808] px-4">
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,162,39,0.12),transparent_55%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(0,0,0,0.06),transparent_55%)]" />
       <div className="pointer-events-none absolute -start-32 top-20 h-80 w-80 rounded-full bg-gold/10 blur-3xl" />
 
       <motion.div
@@ -118,7 +118,7 @@ export default function AdminLoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-6 w-full rounded-xl bg-gold py-3.5 text-sm font-bold text-black transition hover:brightness-110 disabled:opacity-50"
+            className="mt-6 w-full rounded-xl bg-gold py-3.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-50"
           >
             {loading ? "جاري الدخول…" : "دخول لوحة التحكم"}
           </button>

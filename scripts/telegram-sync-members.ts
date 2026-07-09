@@ -3,23 +3,10 @@
  * - getChatAdministrators: الأدمنز
  * - getUpdates: أي حد كتب في الجروب أو انضم
  */
-import { PrismaClient } from "@prisma/client";
-import { tgGetUpdates } from "../src/lib/telegram/bot";
-import { syncGroupAdmins, upsertGroupMember } from "../src/lib/telegram/members";
-import type { TgUser } from "../src/lib/telegram/types";
-
-type TgUpdate = {
-  update_id: number;
-  message?: {
-    chat?: { id: number };
-    from?: TgUser;
-    new_chat_members?: TgUser[];
-  };
-  chat_member?: {
-    chat?: { id: number };
-    new_chat_member?: { status: string; user: TgUser };
-  };
-};
+import { prisma } from "../src/lib/prisma";
+import { tgGetChat, tgGetUpdates } from "../src/lib/telegram/bot";
+import { syncGroupAdmins } from "../src/lib/telegram/members";
+import { processTelegramUpdate } from "../src/lib/telegram/updates";
 
 async function main() {
   const chatId = process.env.TELEGRAM_SALES_CHAT_ID;
@@ -28,8 +15,12 @@ async function main() {
     process.exit(1);
   }
 
-  const prisma = new PrismaClient();
   let fromUpdates = 0;
+
+  const chatInfo = await tgGetChat(chatId);
+  if (chatInfo.ok) {
+    console.log(`📋 ${chatInfo.result.title} — ~${chatInfo.result.members_count ?? "?"} عضو`);
+  }
 
   console.log("🔄 جلب أدمنز الجروب...");
   const admins = await syncGroupAdmins(chatId);
@@ -45,33 +36,11 @@ async function main() {
     const batch = await tgGetUpdates(offset);
     if (!batch.ok || batch.updates.length === 0) break;
 
-    for (const raw of batch.updates as TgUpdate[]) {
-      offset = raw.update_id + 1;
-      const msg = raw.message;
-      const cm = raw.chat_member;
-
-      if (msg?.chat?.id && String(msg.chat.id) === chatId) {
-        if (msg.from && !msg.from.is_bot) {
-          await upsertGroupMember(chatId, msg.from);
-          fromUpdates++;
-        }
-        for (const u of msg.new_chat_members ?? []) {
-          if (!u.is_bot) {
-            await upsertGroupMember(chatId, u);
-            fromUpdates++;
-          }
-        }
-      }
-
-      if (cm?.chat?.id && String(cm.chat.id) === chatId && cm.new_chat_member?.user) {
-        const status = cm.new_chat_member.status;
-        if (status !== "left" && status !== "kicked" && !cm.new_chat_member.user.is_bot) {
-          await upsertGroupMember(chatId, cm.new_chat_member.user, {
-            isAdmin: status === "administrator" || status === "creator",
-          });
-          fromUpdates++;
-        }
-      }
+    for (const raw of batch.updates) {
+      const u = raw as { update_id: number };
+      offset = u.update_id + 1;
+      await processTelegramUpdate(raw as Record<string, unknown>);
+      fromUpdates++;
     }
   }
 

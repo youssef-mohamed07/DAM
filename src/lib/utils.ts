@@ -1,13 +1,15 @@
-import type { PropertyType } from "@/types";
+import type { PropertyType, Locale } from "@/types";
 import { getDistrictById } from "@/lib/data/districts";
+import { getDictionary } from "@/lib/i18n/dictionary";
+import { translate, type Bilingual } from "@/lib/i18n/translate";
 
 export function cn(...classes: (string | false | null | undefined)[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-/** Arabic-only UI strings */
-export function t(obj: { en: string; ar: string }): string {
-  return obj.ar;
+/** Bilingual field — pass locale when outside React (server components). */
+export function t(obj: Bilingual, locale: Locale = "ar"): string {
+  return translate(obj, locale);
 }
 
 export const PROPERTY_TYPE_AR: Record<PropertyType, string> = {
@@ -18,25 +20,24 @@ export const PROPERTY_TYPE_AR: Record<PropertyType, string> = {
   townhouse: "تاون هاوس",
 };
 
-export function propertyTypeLabel(type: PropertyType): string {
-  return PROPERTY_TYPE_AR[type];
+export function propertyTypeLabel(type: PropertyType, locale: Locale = "ar"): string {
+  return getDictionary(locale).propertyTypes[type];
 }
 
-export function districtLabel(id: string): string {
-  return getDistrictById(id)?.name.ar ?? id;
+export function districtLabel(id: string, locale: Locale = "ar"): string {
+  const district = getDistrictById(id);
+  if (!district) return id;
+  return translate(district.name, locale);
 }
 
-export function deliveryLabel(delivery: string): string {
-  const labels: Record<string, string> = {
-    Ready: "جاهز للتسليم",
-    "Q2 2026": "الربع الثاني 2026",
-    "Q4 2025": "الربع الرابع 2025",
-  };
-  return labels[delivery] ?? delivery;
+export function deliveryLabel(delivery: string, locale: Locale = "ar"): string {
+  const dict = getDictionary(locale).delivery as Record<string, string>;
+  return dict[delivery] ?? delivery;
 }
 
-export function yesNo(value: boolean): string {
-  return value ? "نعم" : "لا";
+export function yesNo(value: boolean, locale: Locale = "ar"): string {
+  const dict = getDictionary(locale);
+  return value ? dict.yes : dict.no;
 }
 
 const ARABIC_DIGITS = "٠١٢٣٤٥٦٧٨٩";
@@ -52,9 +53,10 @@ export function formatNumber(value: number, maximumFractionDigits = 0): string {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits }).format(value);
 }
 
-/** سعر بالجنيه — أرقام إنجليزية */
-export function formatPriceEGP(price: number): string {
-  return `${formatNumber(price)} ج.م`;
+/** سعر — أرقام إنجليزية */
+export function formatPriceEGP(price: number, locale: Locale = "ar"): string {
+  const dict = getDictionary(locale);
+  return `${formatNumber(price)} ${dict.currency}`;
 }
 
 /** هاتف دولي للعرض */

@@ -1,5 +1,7 @@
 "use client";
 
+import { useLocale } from "@/providers/LocaleProvider";
+
 interface SectionHeaderProps {
   label: { en: string; ar: string };
   title: { en: string; ar: string };
@@ -16,11 +18,11 @@ export function SectionHeader({
   title,
   description,
   align = "left",
-  light = false,
   inverted = false,
   size = "default",
   className = "",
 }: SectionHeaderProps) {
+  const { t } = useLocale();
   const centered = align === "center";
   const titleSize =
     size === "large"
@@ -30,15 +32,15 @@ export function SectionHeader({
 
   return (
     <header className={`${centered ? "text-center" : ""} ${className}`}>
-      <p className="text-[10px] font-semibold tracking-[0.2em] text-gold uppercase sm:text-[11px] sm:tracking-[0.3em]">
-        {label.ar}
+      <p className="text-[10px] font-semibold tracking-[0.2em] text-black uppercase sm:text-[11px] sm:tracking-[0.3em]">
+        {t(label)}
       </p>
       <h2
         className={`font-serif mt-3 leading-[1.12] ${titleSize} ${
           onDark ? "text-white" : "text-[#0a0a0a]"
         }`}
       >
-        {title.ar}
+        {t(title)}
       </h2>
       {description && (
         <p
@@ -46,7 +48,7 @@ export function SectionHeader({
             centered ? "mx-auto" : ""
           } ${onDark ? "text-white/55" : "text-black/55"}`}
         >
-          {description.ar}
+          {t(description)}
         </p>
       )}
       <div

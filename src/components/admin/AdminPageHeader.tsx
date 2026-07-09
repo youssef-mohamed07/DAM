@@ -23,7 +23,7 @@ export function AdminPageHeader({ title, description, badge, action }: Props) {
         {action ? (
           <Link
             href={action.href}
-            className="inline-flex items-center gap-2 rounded-xl bg-gold px-5 py-2.5 text-sm font-bold text-black shadow-[0_4px_20px_rgba(201,162,39,0.3)] transition hover:brightness-110"
+            className="inline-flex items-center gap-2 rounded-xl bg-gold px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition hover:brightness-110"
           >
             <Plus className="h-4 w-4" />
             {action.label}

@@ -159,14 +159,14 @@ export function MarketPageContent() {
           <div className="mt-12 flex flex-wrap justify-center gap-3">
             <Link
               href="/properties"
-              className="inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3 text-sm font-semibold text-black transition hover:brightness-110"
+              className="inline-flex items-center gap-2 rounded-full bg-gold px-7 py-3 text-sm font-semibold text-white transition hover:brightness-110"
             >
               استكشف العقارات
               <ArrowLeft className="h-4 w-4" />
             </Link>
             <a
               href={whatsappUrl("مرحباً، أريد استشارة عن سوق العبور")}
-              className="inline-flex items-center gap-2 rounded-full border border-gold/35 px-7 py-3 text-sm text-gold transition hover:bg-gold hover:text-black"
+              className="inline-flex items-center gap-2 rounded-full border border-gold/35 px-7 py-3 text-sm text-gold transition hover:bg-white hover:text-black"
             >
               استشارة مجانية
               <ChevronLeft className="h-4 w-4" />

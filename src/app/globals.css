@@ -1,17 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --black: #0a0a0a;
-  --ivory: #f7f5f1;
-  --ivory-muted: #eeebe4;
+  --black: #000000;
+  --ivory: #f5f5f5;
+  --ivory-muted: #ebebeb;
   --white: #ffffff;
-  --gold: #b8941f;
-  --gold-light: #e2c96a;
-  --gold-bright: #f0d878;
-  --gold-dim: rgba(201, 162, 39, 0.12);
-  --muted: #6b6b6b;
-  --border: rgba(0, 0, 0, 0.08);
-  --glass: rgba(255, 255, 255, 0.85);
+  /* Legacy token names — mapped to monochrome brand palette */
+  --gold: #000000;
+  --gold-light: #525252;
+  --gold-bright: #ffffff;
+  --gold-dim: rgba(0, 0, 0, 0.08);
+  --muted: #737373;
+  --border: rgba(0, 0, 0, 0.1);
+  --glass: rgba(255, 255, 255, 0.9);
   --glass-border: rgba(0, 0, 0, 0.08);
 }
 
@@ -29,7 +30,7 @@
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--gold) transparent;
+  scrollbar-color: var(--black) transparent;
 }
 
 html {
@@ -98,7 +99,7 @@ button {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(201, 162, 39, 0.5),
+    rgba(0, 0, 0, 0.2),
     transparent
   );
   border-radius: 9999px;
@@ -107,10 +108,10 @@ button {
 
 .dam-nav-scrolled {
   background: rgba(255, 255, 255, 0.97);
-  border-color: rgba(201, 162, 39, 0.2);
+  border-color: rgba(0, 0, 0, 0.12);
   box-shadow:
     0 8px 40px rgba(0, 0, 0, 0.1),
-    0 0 0 1px rgba(201, 162, 39, 0.06);
+    0 0 0 1px rgba(0, 0, 0, 0.04);
 }
 
 .dam-glass-light {
@@ -125,8 +126,8 @@ button {
   position: relative;
   overflow: hidden;
   border-radius: 1rem;
-  background: linear-gradient(145deg, #ffffff 0%, #faf8f4 100%);
-  border: 1px solid rgba(201, 162, 39, 0.22);
+  background: linear-gradient(145deg, #ffffff 0%, #fafafa 100%);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
 }
 
@@ -136,23 +137,23 @@ button {
   inset: 0;
   background: radial-gradient(
     ellipse at 80% 0%,
-    rgba(201, 162, 39, 0.08) 0%,
+    rgba(0, 0, 0, 0.04) 0%,
     transparent 55%
   );
   pointer-events: none;
 }
 
 .dam-district-premium:hover {
-  border-color: rgba(201, 162, 39, 0.45);
+  border-color: rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(201, 162, 39, 0.1);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
 }
 
 .dam-district-premium.is-active {
-  border-color: var(--gold);
+  border-color: var(--black);
   box-shadow:
-    0 0 0 1px rgba(201, 162, 39, 0.25),
-    0 16px 40px rgba(201, 162, 39, 0.12);
+    0 0 0 1px rgba(0, 0, 0, 0.15),
+    0 16px 40px rgba(0, 0, 0, 0.1);
 }
 
 .dam-zone-pill {
@@ -176,32 +177,30 @@ button {
 }
 
 .text-gradient-gold {
-  background: linear-gradient(135deg, #c9a227 0%, #e8c84a 45%, #f5e6a8 100%);
+  background: linear-gradient(135deg, #000000 0%, #404040 50%, #737373 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .dam-hero-video {
-  filter: brightness(0.72) contrast(1.18) saturate(1.25);
+  filter: brightness(0.7) contrast(1.05) saturate(0.9);
 }
 
 .dam-hero-overlay {
   background:
-    linear-gradient(to left, rgba(8, 8, 8, 0.88) 0%, rgba(8, 8, 8, 0.45) 42%, rgba(8, 8, 8, 0.15) 68%, transparent 100%),
-    linear-gradient(to top, rgba(8, 8, 8, 0.92) 0%, rgba(8, 8, 8, 0.35) 28%, transparent 55%),
-    radial-gradient(ellipse at 70% 30%, transparent 0%, rgba(8, 8, 8, 0.5) 100%);
+    linear-gradient(to top, rgba(10, 10, 10, 0.92) 0%, rgba(10, 10, 10, 0.45) 45%, rgba(10, 10, 10, 0.65) 100%);
 }
 
 .dam-hero-title {
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.8);
+  text-shadow: none;
 }
 
 .dam-nav-hero {
-  background: rgba(8, 8, 8, 0.62);
-  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.72);
+  border-color: rgba(255, 255, 255, 0.12);
   box-shadow:
-    0 8px 40px rgba(0, 0, 0, 0.4),
+    0 8px 40px rgba(0, 0, 0, 0.45),
     inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
@@ -209,7 +208,7 @@ button {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(201, 162, 39, 0.65),
+    rgba(255, 255, 255, 0.35),
     transparent
   );
 }
@@ -257,7 +256,7 @@ button {
   inset: 0;
   background: radial-gradient(
     ellipse 80% 50% at 50% 0%,
-    rgba(201, 162, 39, 0.05) 0%,
+    rgba(0, 0, 0, 0.03) 0%,
     transparent 60%
   );
   pointer-events: none;
@@ -265,7 +264,7 @@ button {
 
 .dam-trust-bar {
   border-radius: 1.25rem;
-  border: 1px solid rgba(201, 162, 39, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   background: #fff;
   box-shadow:
     0 24px 64px rgba(0, 0, 0, 0.14),
@@ -281,15 +280,15 @@ button {
 }
 
 .dam-card-elevated:hover {
-  box-shadow: 0 12px 40px rgba(201, 162, 39, 0.1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
 }
 
 /* ── Admin panel ── */
 .admin-main-bg {
   background:
-    radial-gradient(ellipse 90% 60% at 100% 0%, rgba(201, 162, 39, 0.07), transparent 50%),
+    radial-gradient(ellipse 90% 60% at 100% 0%, rgba(0, 0, 0, 0.04), transparent 50%),
     radial-gradient(ellipse 70% 50% at 0% 100%, rgba(0, 0, 0, 0.03), transparent 50%),
-    #f4f2ed;
+    #f5f5f5;
 }
 
 .admin-stat-card {
@@ -299,7 +298,7 @@ button {
 
 .admin-stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 28px rgba(201, 162, 39, 0.12);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
 }
 
 .admin-lead-card {
@@ -310,21 +309,21 @@ button {
 }
 
 .admin-lead-card:hover {
-  border-color: rgba(201, 162, 39, 0.35);
-  box-shadow: 0 8px 32px rgba(201, 162, 39, 0.1);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
   transform: translateY(-1px);
 }
 
 .admin-sales-card {
   border: 1px solid rgba(0, 0, 0, 0.06);
-  background: linear-gradient(145deg, #fff 0%, #faf9f6 100%);
+  background: linear-gradient(145deg, #fff 0%, #fafafa 100%);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
   transition: border-color 0.25s, box-shadow 0.25s;
 }
 
 .admin-sales-card:hover {
-  border-color: rgba(201, 162, 39, 0.3);
-  box-shadow: 0 12px 40px rgba(201, 162, 39, 0.12);
+  border-color: rgba(0, 0, 0, 0.18);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
 }
 
 .admin-section-title {
@@ -332,11 +331,11 @@ button {
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-gold, #c9a227);
+  color: var(--black);
 }
 
 .admin-shimmer {
-  background: linear-gradient(90deg, #f0ede6 25%, #faf8f4 50%, #f0ede6 75%);
+  background: linear-gradient(90deg, #ebebeb 25%, #f5f5f5 50%, #ebebeb 75%);
   background-size: 200% 100%;
   animation: admin-shimmer 1.4s ease-in-out infinite;
 }
@@ -354,8 +353,8 @@ button {
 }
 
 .dam-card-dark:hover {
-  border-color: rgba(201, 162, 39, 0.35);
-  box-shadow: 0 8px 32px rgba(201, 162, 39, 0.08);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 .dam-about-panel {
@@ -379,7 +378,7 @@ button {
   background: linear-gradient(
     to right,
     transparent,
-    rgba(201, 162, 39, 0.35),
+    rgba(0, 0, 0, 0.15),
     transparent
   );
 }
@@ -415,8 +414,8 @@ button {
 }
 
 .dam-card:hover {
-  border-color: rgba(201, 162, 39, 0.35);
-  box-shadow: 0 8px 28px rgba(201, 162, 39, 0.08);
+  border-color: rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
 }
 
 .dam-card-light {
@@ -435,7 +434,7 @@ button {
 }
 
 .select-dark option {
-  color: #0a0a0a;
+  color: #000;
   background: #fff;
 }
 
@@ -450,7 +449,7 @@ button {
 }
 
 .select-light option {
-  color: #0a0a0a;
+  color: #000;
   background: #fff;
 }
 
@@ -489,12 +488,12 @@ button {
 }
 
 .dam-contact-input:focus {
-  border-color: rgba(201, 162, 39, 0.55);
-  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.12);
+  border-color: rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.08);
 }
 
 .dam-contact-input option {
-  color: #0a0a0a;
+  color: #000;
   background: #fff;
 }
 
@@ -513,48 +512,18 @@ button {
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(201, 162, 39, 0.6),
+    rgba(0, 0, 0, 0.25),
     transparent
   );
   pointer-events: none;
 }
 
 ::selection {
-  background: rgba(201, 162, 39, 0.25);
-  color: #0a0a0a;
+  background: rgba(0, 0, 0, 0.12);
+  color: #000;
 }
 
-.dam-splash-glow {
-  background: radial-gradient(
-    circle,
-    rgba(201, 162, 39, 0.22) 0%,
-    rgba(201, 162, 39, 0.08) 45%,
-    transparent 72%
-  );
-}
-
-.dam-splash-grain {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size: 180px 180px;
-}
-
-.dam-splash-headline {
-  font-family: var(--font-cormorant), serif;
-  text-shadow: 0 4px 40px rgba(0, 0, 0, 0.45);
-}
-
-.dam-splash-highlight {
-  background: linear-gradient(120deg, #ffffff 0%, #e8d48a 45%, #c9a227 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 0 30px rgba(201, 162, 39, 0.35));
-}
-
-.dam-splash-ghost {
-  font-size: clamp(3.5rem, 14vw, 9rem);
-  max-width: 90vw;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.dam-nav-hero .text-gold,
+.dam-hero-dark .text-gold {
+  color: #fff;
 }

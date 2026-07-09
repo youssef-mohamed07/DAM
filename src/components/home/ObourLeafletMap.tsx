@@ -25,8 +25,8 @@ function districtIcon(active: boolean, premium: boolean, label?: string) {
       className: "",
       html: `
         <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <div style="width:16px;height:16px;border-radius:50%;background:#C9A227;border:2px solid #fff;box-shadow:0 0 16px rgba(201,162,39,0.9);"></div>
-          <span style="white-space:nowrap;background:#0a0a0a;color:#C9A227;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;border:1px solid #C9A227;">${label}</span>
+          <div style="width:16px;height:16px;border-radius:50%;background:#ffffff;border:2px solid #000;box-shadow:0 0 16px rgba(255,255,255,0.9);"></div>
+          <span style="white-space:nowrap;background:#000000;color:#ffffff;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;border:1px solid #ffffff;">${label}</span>
         </div>
       `,
       iconSize: [120, 40],
@@ -35,12 +35,12 @@ function districtIcon(active: boolean, premium: boolean, label?: string) {
   }
 
   const size = active ? 16 : premium ? 13 : 10;
-  const bg = active ? "#C9A227" : premium ? "#e8d48a" : "#ffffff";
-  const border = active ? "#ffffff" : "#C9A227";
+  const bg = active ? "#ffffff" : premium ? "#d4d4d4" : "#ffffff";
+  const border = active ? "#000000" : "#000000";
 
   return L.divIcon({
     className: "",
-    html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${bg};border:2px solid ${border};${active ? "box-shadow:0 0 14px rgba(201,162,39,0.85);" : ""}"></div>`,
+    html: `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${bg};border:2px solid ${border};${active ? "box-shadow:0 0 14px rgba(255,255,255,0.85);" : ""}"></div>`,
     iconSize: [size, size],
     iconAnchor: [size / 2, size / 2],
   });
@@ -49,7 +49,7 @@ function districtIcon(active: boolean, premium: boolean, label?: string) {
 function propertyIcon() {
   return L.divIcon({
     className: "",
-    html: `<div style="width:8px;height:8px;border-radius:50%;background:#C9A227;border:1px solid #0a0a0a;"></div>`,
+    html: `<div style="width:8px;height:8px;border-radius:50%;background:#000000;border:1px solid #ffffff;"></div>`,
     iconSize: [8, 8],
     iconAnchor: [4, 4],
   });
@@ -167,8 +167,8 @@ export function ObourLeafletMap({
         center={[active.lat, active.lng]}
         radius={isPremium ? 1200 : 800}
         pathOptions={{
-          color: "#C9A227",
-          fillColor: "#C9A227",
+          color: "#000000",
+          fillColor: "#000000",
           fillOpacity: 0.1,
           weight: 2,
           opacity: 0.75,

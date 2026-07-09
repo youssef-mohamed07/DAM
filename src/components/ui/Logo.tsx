@@ -6,12 +6,11 @@ export const LOGO_SRC = "/logo.png";
 export const LOGO_ALT = "DAM Properties";
 
 const sizeMap = {
-  xs: 24,
-  sm: 32,
-  md: 40,
-  lg: 56,
-  xl: 80,
-  splash: 112,
+  xs: 28,
+  sm: 36,
+  md: 44,
+  lg: 64,
+  xl: 88,
 } as const;
 
 export type LogoSize = keyof typeof sizeMap;
@@ -27,10 +26,41 @@ type LogoProps = {
   taglineClassName?: string;
 };
 
+function LogoImage({
+  px,
+  priority,
+  imageClassName,
+  className,
+}: {
+  px: number;
+  priority?: boolean;
+  imageClassName?: string;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "relative inline-flex shrink-0 items-center justify-center overflow-hidden rounded-lg bg-black shadow-[0_0_24px_rgba(0,0,0,0.15)]",
+        className,
+      )}
+      style={{ width: px, height: px }}
+    >
+      <Image
+        src={LOGO_SRC}
+        alt={LOGO_ALT}
+        width={px}
+        height={px}
+        priority={priority}
+        className={cn("h-full w-full object-contain p-1", imageClassName)}
+      />
+    </span>
+  );
+}
+
 export function Logo({
   size = "md",
   showTagline = false,
-  tagline = "عقارات فاخرة",
+  tagline = "DAM Properties",
   href = "/",
   className,
   imageClassName,
@@ -41,22 +71,7 @@ export function Logo({
 
   const content = (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
-      <span
-        className={cn(
-          "relative shrink-0 overflow-hidden rounded-full border border-gold/30 bg-white shadow-[0_0_20px_rgba(201,162,39,0.12)]",
-          size === "splash" && "dam-splash-glow border-gold/40 shadow-[0_0_40px_rgba(201,162,39,0.25)]",
-        )}
-        style={{ width: px, height: px }}
-      >
-        <Image
-          src={LOGO_SRC}
-          alt={LOGO_ALT}
-          width={px}
-          height={px}
-          priority={priority}
-          className={cn("h-full w-full object-cover", imageClassName)}
-        />
-      </span>
+      <LogoImage px={px} priority={priority} imageClassName={imageClassName} />
       {showTagline ? (
         <span className="min-w-0">
           <span className="sr-only">{LOGO_ALT}</span>
@@ -78,13 +93,12 @@ export function Logo({
   if (href === false) return content;
 
   return (
-    <Link href={href} className="group shrink-0">
+    <Link href={href} className="group shrink-0 transition hover:opacity-90">
       {content}
     </Link>
   );
 }
 
-/** صورة اللوجو فقط — للشاشات والأماكن اللي مش محتاجة لينك */
 export function LogoMark({
   size = "md",
   className,
@@ -93,21 +107,11 @@ export function LogoMark({
 }: Pick<LogoProps, "size" | "className" | "imageClassName" | "priority">) {
   const px = sizeMap[size];
   return (
-    <span
-      className={cn(
-        "relative inline-flex shrink-0 overflow-hidden rounded-full border border-gold/30 bg-white shadow-[0_0_20px_rgba(201,162,39,0.12)]",
-        className,
-      )}
-      style={{ width: px, height: px }}
-    >
-      <Image
-        src={LOGO_SRC}
-        alt={LOGO_ALT}
-        width={px}
-        height={px}
-        priority={priority}
-        className={cn("h-full w-full object-cover", imageClassName)}
-      />
-    </span>
+    <LogoImage
+      px={px}
+      priority={priority}
+      imageClassName={imageClassName}
+      className={className}
+    />
   );
 }

@@ -7,13 +7,21 @@ import {
   MessageCircle,
   Phone,
   ExternalLink,
-  User,
   Building2,
   Calendar,
 } from "lucide-react";
 import { fetchLead, updateLead } from "@/lib/leads/client";
-import { leadStatusLabels, leadStatusColors, leadSourceLabels } from "@/lib/leads/labels";
+import {
+  leadStatusLabels,
+  leadStatusColors,
+  leadSourceLabels,
+  leadSourceColors,
+  notifyStatusLabels,
+  notifyStatusColors,
+} from "@/lib/leads/labels";
 import { buildSalesAssignmentMessage } from "@/lib/leads/messages";
+import { parseContactLines, getLeadTags } from "@/lib/leads/crm";
+import { LeadCrmTimeline } from "@/components/admin/LeadCrmTimeline";
 import {
   openWhatsApp,
   buildMessage,
@@ -91,6 +99,8 @@ export default function AdminLeadDetailPage({
 
   const rep = lead.assignedSalesId ? reps.find((r) => r.id === lead.assignedSalesId) : null;
   const selectedRep = salesId ? reps.find((r) => r.id === salesId) : null;
+  const contactLines = parseContactLines(lead.notes);
+  const tags = getLeadTags(lead);
   const initials = (lead.clientName || "؟")
     .split(" ")
     .slice(0, 2)
@@ -142,21 +152,48 @@ export default function AdminLeadDetailPage({
                   {leadStatusLabels[lead.status]}
                 </span>
               </div>
-              <div className="mt-2 flex flex-wrap gap-3 text-xs text-black/45">
-                <span className="flex items-center gap-1">
-                  <User className="h-3.5 w-3.5" />
+              <div className="mt-2 flex flex-wrap gap-2">
+                <span
+                  className={cn(
+                    "rounded-full px-2.5 py-0.5 text-[10px] font-medium",
+                    leadSourceColors[lead.source],
+                  )}
+                >
                   {leadSourceLabels[lead.source]}
                 </span>
-                <span className="flex items-center gap-1">
+                {lead.notifyStatus ? (
+                  <span
+                    className={cn(
+                      "rounded-full px-2.5 py-0.5 text-[10px] font-medium",
+                      notifyStatusColors[lead.notifyStatus],
+                    )}
+                  >
+                    تليجرام: {notifyStatusLabels[lead.notifyStatus]}
+                  </span>
+                ) : null}
+                <span className="flex items-center gap-1 text-xs text-black/45">
                   <Calendar className="h-3.5 w-3.5" />
                   {new Date(lead.createdAt).toLocaleString("ar-EG")}
                 </span>
               </div>
+              {tags.length ? (
+                <div className="mt-3 flex flex-wrap gap-1.5">
+                  {tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-md bg-black/[0.05] px-2 py-0.5 text-[10px] text-black/55"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
             </div>
           </div>
         </div>
 
-        <div className="grid gap-6 p-6 lg:grid-cols-2">
+        <div className="grid gap-6 p-6 lg:grid-cols-3">
+          <div className="space-y-6 lg:col-span-2">
           {lead.propertyTitle ? (
             <section className="rounded-xl border border-black/6 bg-ivory/50 p-5 lg:col-span-2">
               <h2 className="admin-section-title flex items-center gap-2">
@@ -165,30 +202,46 @@ export default function AdminLeadDetailPage({
               </h2>
               <p className="mt-2 text-lg font-semibold text-[#0a0a0a]">{lead.propertyTitle}</p>
               {lead.propertySlug ? (
-                <Link
+                <a
                   href={`/properties/${lead.propertySlug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="mt-2 inline-flex items-center gap-1 text-sm text-gold hover:underline"
                 >
-                  عرض العقار
+                  عرض على الموقع
                   <ExternalLink className="h-3.5 w-3.5" />
-                </Link>
+                </a>
               ) : null}
             </section>
           ) : null}
 
           <section className="rounded-xl border border-black/6 p-5">
-            <h2 className="admin-section-title">بيانات العميل</h2>
+            <h2 className="admin-section-title">بيانات التواصل</h2>
             <dl className="mt-4 space-y-3 text-sm">
               {lead.clientPhone ? (
                 <div>
-                  <dt className="text-black/40">الهاتف</dt>
-                  <dd className="font-medium" dir="ltr">{lead.clientPhone}</dd>
+                  <dt className="text-black/40">الموبايل</dt>
+                  <dd className="font-medium" dir="ltr">
+                    <a href={`tel:${lead.clientPhone}`} className="hover:text-gold">
+                      {lead.clientPhone}
+                    </a>
+                  </dd>
                 </div>
               ) : null}
               {lead.clientEmail ? (
                 <div>
                   <dt className="text-black/40">البريد</dt>
-                  <dd className="font-medium">{lead.clientEmail}</dd>
+                  <dd className="font-medium">
+                    <a href={`mailto:${lead.clientEmail}`} className="hover:text-gold">
+                      {lead.clientEmail}
+                    </a>
+                  </dd>
+                </div>
+              ) : null}
+              {lead.propertyType ? (
+                <div>
+                  <dt className="text-black/40">نوع العقار</dt>
+                  <dd>{lead.propertyType}</dd>
                 </div>
               ) : null}
               {lead.goal ? (
@@ -212,7 +265,32 @@ export default function AdminLeadDetailPage({
             </dl>
           </section>
 
-          <section className="rounded-xl border border-black/6 p-5">
+          {contactLines.length > 0 ? (
+            <section className="rounded-xl border border-emerald-500/15 bg-emerald-500/5 p-5 lg:col-span-2">
+              <h2 className="admin-section-title">أرقام من الفورم</h2>
+              <ul className="mt-3 space-y-2 text-sm">
+                {contactLines.map((line, i) => (
+                  <li key={i} className="flex flex-wrap gap-2">
+                    <span className="text-black/40">{line.label}:</span>
+                    <span className="font-medium" dir="ltr">
+                      {line.value}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+
+          {lead.message ? (
+            <section className="rounded-xl border border-black/6 bg-ivory/30 p-5 lg:col-span-2">
+              <h2 className="admin-section-title">تفاصيل الطلب (من الموقع)</h2>
+              <pre className="mt-3 whitespace-pre-wrap font-sans text-sm leading-relaxed text-black/65">
+                {lead.message}
+              </pre>
+            </section>
+          ) : null}
+
+          <section className="rounded-xl border border-black/6 p-5 lg:col-span-2">
             <h2 className="admin-section-title">تعيين لمندوب</h2>
             <div className="mt-4 flex flex-wrap gap-2">
               <select
@@ -231,7 +309,7 @@ export default function AdminLeadDetailPage({
                 type="button"
                 disabled={!salesId || saving}
                 onClick={() => save({ assignedSalesId: salesId })}
-                className="rounded-xl bg-gold px-4 py-2.5 text-sm font-semibold text-black disabled:opacity-40"
+                className="rounded-xl bg-gold px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-40"
               >
                 حفظ
               </button>
@@ -243,15 +321,8 @@ export default function AdminLeadDetailPage({
             ) : null}
           </section>
 
-          {lead.message ? (
-            <section className="rounded-xl border border-black/6 bg-ivory/30 p-5 lg:col-span-2">
-              <h2 className="admin-section-title">رسالة العميل</h2>
-              <p className="mt-3 text-sm leading-relaxed text-black/65">{lead.message}</p>
-            </section>
-          ) : null}
-
           <section className="rounded-xl border border-black/6 p-5 lg:col-span-2">
-            <h2 className="admin-section-title">الحالة والملاحظات</h2>
+            <h2 className="admin-section-title">الحالة والملاحظات الداخلية</h2>
             <div className="mt-4 flex flex-wrap gap-2">
               {statuses.map((s) => (
                 <button
@@ -285,6 +356,15 @@ export default function AdminLeadDetailPage({
               حفظ الملاحظات
             </button>
           </section>
+          </div>
+
+          <div className="space-y-6">
+            <LeadCrmTimeline
+              status={lead.status}
+              createdAt={lead.createdAt}
+              assignedAt={lead.assignedAt}
+            />
+          </div>
         </div>
 
         <div className="flex flex-wrap gap-3 border-t border-black/6 bg-ivory/30 px-6 py-5">
@@ -292,7 +372,7 @@ export default function AdminLeadDetailPage({
             type="button"
             onClick={sendToSales}
             disabled={!salesId && !rep}
-            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gold px-6 py-3.5 text-sm font-bold text-black disabled:opacity-40"
+            className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gold px-6 py-3.5 text-sm font-bold text-white disabled:opacity-40"
           >
             <MessageCircle className="h-4 w-4" />
             إرسال للمندوب

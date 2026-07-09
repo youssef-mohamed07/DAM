@@ -132,6 +132,7 @@ export async function handleTelegramCommand(
           "⚠️ مفيش أعضاء مسجّلين لسه.",
           "",
           "• خلّي البوت <b>أدمن</b> في الجروب",
+          "• عطّل Privacy Mode من BotFather: <code>/setprivacy</code> → Disable",
           "• أو ابعت <code>/me</code> من كل مندوب",
           "• أو شغّل: <code>npm run telegram:sync</code>",
         ].join("\n"),
@@ -153,6 +154,20 @@ export async function handleTelegramCommand(
     await tgSendMessage(
       chatId,
       `<b>أعضاء الجروب (${members.length})</b>\n\n${lines.join("\n")}${syncNote}\n\nاربط نفسك: <code>/link s1</code>`,
+    );
+    return true;
+  }
+
+  if (command === "/chatid" || command === "/ايدي_جروب" || command === "/groupid") {
+    const title = chat.title ?? "جروب";
+    await tgSendMessage(
+      chatId,
+      [
+        `📋 <b>${title}</b>`,
+        `🆔 Chat ID: <code>${chat.id}</code>`,
+        "",
+        "انسخ الرقم في <code>TELEGRAM_SALES_CHAT_ID</code> في .env.local",
+      ].join("\n"),
     );
     return true;
   }

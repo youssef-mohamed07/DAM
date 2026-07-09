@@ -102,7 +102,7 @@ export default function AdminSalesPage() {
         <button
           type="button"
           onClick={openAdd}
-          className="inline-flex items-center gap-2 rounded-xl bg-gold px-5 py-2.5 text-sm font-bold text-black shadow-[0_4px_20px_rgba(201,162,39,0.3)] transition hover:brightness-110"
+          className="inline-flex items-center gap-2 rounded-xl bg-gold px-5 py-2.5 text-sm font-bold text-white shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition hover:brightness-110"
         >
           <Plus className="h-4 w-4" />
           إضافة مندوب
@@ -172,7 +172,7 @@ export default function AdminSalesPage() {
                   href={whatsappLink(rep.whatsapp, `مرحباً ${rep.name}`)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gold py-3 text-sm font-bold text-black shadow-sm transition hover:brightness-110"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gold py-3 text-sm font-bold text-white shadow-sm transition hover:brightness-110"
                 >
                   <MessageCircle className="h-4 w-4" />
                   واتساب
@@ -277,7 +277,7 @@ export default function AdminSalesPage() {
             <button
               type="button"
               onClick={save}
-              className="mt-6 w-full rounded-xl bg-gold py-3 text-sm font-bold text-black"
+              className="mt-6 w-full rounded-xl bg-gold py-3 text-sm font-bold text-white"
             >
               حفظ
             </button>

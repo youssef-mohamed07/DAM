@@ -8,6 +8,7 @@ export async function GET(request: Request) {
     status: searchParams.get("status") ?? undefined,
     propertyId: searchParams.get("propertyId") ?? undefined,
     assignedSalesId: searchParams.get("assignedSalesId") ?? undefined,
+    source: searchParams.get("source") ?? undefined,
   });
   return NextResponse.json(leads);
 }

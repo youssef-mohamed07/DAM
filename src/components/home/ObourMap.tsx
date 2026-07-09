@@ -88,7 +88,7 @@ function PremiumPicker({
               <div className="mt-3 flex items-center gap-2">
                 <div className="h-1 flex-1 overflow-hidden rounded-full bg-black/8">
                   <div
-                    className="h-full rounded-full bg-gradient-to-l from-gold to-[#e8d48a]"
+                    className="h-full rounded-full bg-gradient-to-l from-black to-black"
                     style={{ width: `${d.investmentScore}%` }}
                   />
                 </div>
@@ -291,7 +291,7 @@ export function ObourMap() {
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -8 }}
-                  className="border-t border-black/6 bg-gradient-to-b from-[#faf7f2] to-white p-5"
+                  className="border-t border-black/6 bg-gradient-to-b from-[#f5f5f5] to-white p-5"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -315,7 +315,7 @@ export function ObourMap() {
                   </p>
                   <Link
                     href={`/properties?district=${active.id}`}
-                    className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-2xl bg-[#0a0a0a] py-3 text-sm font-medium text-white transition hover:bg-gold hover:text-black"
+                    className="mt-4 inline-flex w-full items-center justify-center gap-1.5 rounded-2xl bg-[#0a0a0a] py-3 text-sm font-medium text-white transition hover:bg-white hover:text-black"
                   >
                     استكشف العقارات
                     <ChevronLeft className="h-4 w-4" />
@@ -327,7 +327,7 @@ export function ObourMap() {
 
           <div className="min-w-0 space-y-5 xl:col-span-8 xl:order-2">
             <div className="overflow-hidden rounded-3xl border border-black/8 bg-white shadow-[0_16px_48px_rgba(0,0,0,0.08)]">
-              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/8 bg-gradient-to-l from-[#faf7f2] to-white px-5 py-3.5">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/8 bg-gradient-to-l from-[#f5f5f5] to-white px-5 py-3.5">
                 <div className="flex items-center gap-2 text-sm text-black/65">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gold/15">
                     <MapPin className="h-4 w-4 text-gold" />
@@ -356,7 +356,7 @@ export function ObourMap() {
                     href={googleMapsUrl(active.lat, active.lng, t(active.name))}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 rounded-full bg-[#0a0a0a] px-3.5 py-2 text-xs font-medium text-white transition hover:bg-gold hover:text-black"
+                    className="flex items-center gap-1.5 rounded-full bg-[#0a0a0a] px-3.5 py-2 text-xs font-medium text-white transition hover:bg-white hover:text-black"
                   >
                     خرائط جوجل
                     <ExternalLink className="h-3.5 w-3.5" />
@@ -379,7 +379,7 @@ export function ObourMap() {
                 />
               </div>
 
-              <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 border-t border-black/8 bg-[#faf7f2] px-5 py-3 text-[11px] text-black/45">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 border-t border-black/8 bg-[#f5f5f5] px-5 py-3 text-[11px] text-black/45">
                 <span className="flex items-center gap-1.5">
                   <span className="inline-block h-2 w-2 rounded-full bg-gold" />
                   عقارات DAM
@@ -389,7 +389,7 @@ export function ObourMap() {
                   أحياء المجموعة
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <span className="inline-block h-3 w-3 rounded-full bg-gold shadow-[0_0_8px_#C9A227]" />
+                  <span className="inline-block h-3 w-3 rounded-full bg-gold shadow-[0_0_8px_rgba(0,0,0,0.4)]" />
                   المنطقة النشطة
                 </span>
                 <a

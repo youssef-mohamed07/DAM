@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { ContactPageContent } from "@/components/contact/ContactPageContent";
 import { company } from "@/lib/data/company";
 import { getPropertyBySlug } from "@/lib/properties/repository";
-import { t } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: `تواصل | ${company.name}`,
@@ -21,7 +20,7 @@ export default async function ContactPage({
     <ContactPageContent
       propertySlug={property?.slug}
       propertyId={property?.id}
-      propertyTitle={property ? t(property.title) : undefined}
+      propertyTitle={property?.title}
     />
   );
 }

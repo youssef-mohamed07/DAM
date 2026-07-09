@@ -25,7 +25,7 @@ export default function ComparePage() {
       <div className="flex min-h-screen w-full max-w-full flex-col items-center justify-center overflow-x-clip bg-white px-4 pt-24 text-center sm:px-6">
         <h1 className="font-serif text-4xl text-[#0a0a0a]">مقارنة العقارات</h1>
         <p className="mt-4 text-black/50">أضف عقارات للمقارنة</p>
-        <Link href="/properties" className="mt-8 rounded-full bg-gold px-8 py-3 font-semibold text-black">
+        <Link href="/properties" className="mt-8 rounded-full bg-gold px-8 py-3 font-semibold text-white">
           تصفح العقارات
         </Link>
       </div>

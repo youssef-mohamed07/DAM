@@ -404,7 +404,7 @@ export default function AdminOperationsPage() {
               type="button"
               disabled={busy === "distribute" || (ops?.unassigned ?? 0) === 0}
               onClick={autoDistribute}
-              className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2.5 text-sm font-bold text-black disabled:opacity-40"
+              className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2.5 text-sm font-bold text-white disabled:opacity-40"
             >
               {busy === "distribute" ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

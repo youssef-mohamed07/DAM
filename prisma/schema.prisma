@@ -20,6 +20,7 @@ enum LeadSource {
   property
   contact
   manual
+  hero
 }
 
 enum NotifyStatus {
@@ -67,6 +68,9 @@ model Property {
   titleEn       String   @map("title_en")
   district      String
   type          String
+  saleCategory  String   @default("primary") @map("sale_category")
+  downPaymentPercent Int? @map("down_payment_percent")
+  installmentYears   Int? @map("installment_years")
   price         Int
   area          Int
   bedrooms      Int
@@ -94,6 +98,7 @@ model Property {
   @@index([published])
   @@index([featured])
   @@index([district])
+  @@index([saleCategory])
   @@map("properties")
 }
 

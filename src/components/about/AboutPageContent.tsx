@@ -23,14 +23,16 @@ import { SectionHeader } from "@/components/ui/SectionHeader";
 import { LogoMark } from "@/components/ui/Logo";
 import { Num } from "@/components/ui/Num";
 import { formatPhoneIntl, formatPhoneLocal } from "@/lib/utils";
+import { useLocale } from "@/providers/LocaleProvider";
 
 const serviceIcons = [Shield, Scale, Crown, Sparkles];
 
-function districtHref(id: string) {
-  return `/properties?district=${id === "reveal" || id === "jazeel" ? "new" : id}`;
+function districtHref(id: string, path: (href: string) => string) {
+  return path(`/properties?district=${id === "reveal" || id === "jazeel" ? "new" : id}`);
 }
 
 export function AboutPageContent() {
+  const { company: co, path, dict, locale } = useLocale();
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-clip bg-white pt-24">
       {/* Hero */}
@@ -40,18 +42,22 @@ export function AboutPageContent() {
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a0a0a]/60 via-[#0a0a0a]/90 to-[#0a0a0a]" />
         </div>
         <div className="dam-container relative py-16 md:py-24">
-          <LogoMark size="md" priority className="mb-6" />
+            <LogoMark
+              size="md"
+              priority
+              className="mb-6 shadow-[0_0_32px_rgba(255,255,255,0.06)]"
+            />
           <p className="sr-only">DAM Properties</p>
           <h1 className="font-serif mt-4 max-w-3xl text-balance text-3xl leading-tight text-white sm:text-4xl md:text-6xl">
-            {company.about.headline}
+            {co.about.headline}
           </h1>
           <p className="mt-6 max-w-2xl text-lg leading-relaxed text-white/60">
-            {company.about.lead}
+            {co.about.lead}
           </p>
-          <p className="mt-3 text-sm italic text-white/40">{company.about.facebookBio}</p>
+          <p className="mt-3 text-sm italic text-white/40">{co.about.facebookBio}</p>
 
           <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {company.stats.map((s) => (
+            {co.stats.map((s) => (
               <div
                 key={s.label}
                 className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 text-center backdrop-blur-sm"
@@ -71,15 +77,15 @@ export function AboutPageContent() {
           <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
             <div>
               <SectionHeader
-                label={{ en: "", ar: "قصتنا" }}
-                title={{ en: "", ar: "متخصصون في العبور منذ ٢٠١٦" }}
+                label={{ en: "Our story", ar: "قصتنا" }}
+                title={{ en: "Obour specialists since 2016", ar: "متخصصون في العبور منذ ٢٠١٦" }}
                 description={{
-                  en: "",
+                  en: "We connect buyers and investors with the best opportunities in Obour and New Obour.",
                   ar: "نربط المشترين والمستثمرين بأفضل الفرص في مدينة العبور والعبور الجديدة.",
                 }}
               />
               <div className="space-y-5 text-base leading-[1.85] text-black/60">
-                {company.about.paragraphs.map((p, i) => (
+                {co.about.paragraphs.map((p, i) => (
                   <p key={i}>{p}</p>
                 ))}
               </div>
@@ -88,8 +94,8 @@ export function AboutPageContent() {
               <Image src={IMAGES.pool} alt="" fill className="object-cover" sizes="50vw" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-6">
-                <p className="text-sm text-white/80">{company.address}</p>
-                <p className="text-xs text-white/45">{company.addressDetail}</p>
+                <p className="text-sm text-white/80">{co.address}</p>
+                <p className="text-xs text-white/45">{co.addressDetail}</p>
               </div>
             </div>
           </div>
@@ -100,10 +106,10 @@ export function AboutPageContent() {
       <section className="dam-ivory dam-section">
         <div className="dam-container">
           <SectionHeader
-            label={{ en: "", ar: "خدماتنا" }}
-            title={{ en: "", ar: "ماذا نقدم لك" }}
+            label={{ en: "Services", ar: "خدماتنا" }}
+            title={{ en: "What we offer", ar: "ماذا نقدم لك" }}
             description={{
-              en: "",
+              en: "From first consultation through signing and post-sale follow-up.",
               ar: "من أول استشارة حتى توقيع العقد ومتابعة ما بعد البيع.",
             }}
             align="center"
@@ -111,7 +117,7 @@ export function AboutPageContent() {
             className="mb-12"
           />
           <div className="grid gap-5 sm:grid-cols-2">
-            {company.services.map((item, i) => {
+            {co.services.map((item, i) => {
               const Icon = serviceIcons[i] ?? Crown;
               return (
                 <article key={item.title} className="dam-card-elevated rounded-2xl p-6">
@@ -131,20 +137,20 @@ export function AboutPageContent() {
       <section className="dam-section dam-section-dark">
         <div className="dam-container">
           <SectionHeader
-            label={{ en: "", ar: "شركاؤنا" }}
-            title={{ en: "", ar: "مشاريع نُسوّقها في العبور" }}
+            label={{ en: "Partners", ar: "شركاؤنا" }}
+            title={{ en: "Projects we market in Obour", ar: "مشاريع نُسوّقها في العبور" }}
             description={{
-              en: "",
+              en: "Compounds and residential/commercial projects with updated pricing and payment plans.",
               ar: "كمبوندات ومشاريع سكنية وتجارية بأسعار وأنظمة سداد محدثة.",
             }}
             align="center"
             className="mb-12"
           />
           <div className="grid gap-5 md:grid-cols-2">
-            {company.projects.map((p) => (
+            {co.projects.map((p) => (
               <Link
                 key={p.id}
-                href={districtHref(p.id)}
+                href={districtHref(p.id, path)}
                 className="dam-card-dark group rounded-2xl p-6 transition hover:border-gold/35"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -181,10 +187,10 @@ export function AboutPageContent() {
       <section className="dam-ivory dam-section">
         <div className="dam-container">
           <SectionHeader
-            label={{ en: "", ar: "السوق" }}
-            title={{ en: "", ar: "لماذا مدينة العبور؟" }}
+            label={{ en: "Market", ar: "السوق" }}
+            title={{ en: "Why Obour City?", ar: "لماذا مدينة العبور؟" }}
             description={{
-              en: "",
+              en: "One of Egypt's fastest-growing suburbs — strategic location and full amenities.",
               ar: "أحد أسرع مدن الضواحي نمواً في مصر — موقع استراتيجي ومرافق متكاملة.",
             }}
             align="center"
@@ -192,7 +198,7 @@ export function AboutPageContent() {
             className="mb-12"
           />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {company.obourFacts.map((f) => (
+            {co.obourFacts.map((f) => (
               <div key={f.title} className="dam-card-elevated rounded-2xl p-5">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-gold" />
@@ -204,7 +210,7 @@ export function AboutPageContent() {
           </div>
 
           <div className="mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {company.heroStats.map((s) => (
+            {co.heroStats.map((s) => (
               <div
                 key={s.label}
                 className="rounded-2xl border border-black/8 bg-white p-5 text-center"
@@ -243,17 +249,17 @@ export function AboutPageContent() {
                 </li>
                 <li className="flex items-center gap-3">
                   <Clock className="h-4 w-4 text-gold" />
-                  {company.hours} · {company.hoursFriday}
+                  {co.hours} · {co.hoursFriday}
                 </li>
                 <li className="flex items-center gap-3">
                   <MapPin className="h-4 w-4 text-gold" />
-                  {company.address}
+                  {co.address}
                 </li>
               </ul>
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
                   href={whatsappUrl("مرحباً، أريد معرفة المزيد عن DAM Properties")}
-                  className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 text-sm font-semibold text-black"
+                  className="inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 text-sm font-semibold text-white"
                 >
                   <MessageCircle className="h-4 w-4" />
                   واتساب
@@ -277,14 +283,14 @@ export function AboutPageContent() {
                 احجز استشارة مجانية وخلينا نساعدك تختار العقار المناسب في العبور.
               </p>
               <Link
-                href="/contact"
-                className="mt-8 inline-flex items-center justify-center gap-2 self-center rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-black transition hover:brightness-110"
+                href={path("/contact")}
+                className="mt-8 inline-flex items-center justify-center gap-2 self-center rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-white transition hover:brightness-110"
               >
                 احجز استشارة
                 <ArrowLeft className="h-4 w-4" />
               </Link>
               <Link
-                href="/properties"
+                href={path("/properties")}
                 className="mt-4 text-sm text-gold/80 transition hover:text-gold"
               >
                 أو تصفّح العقارات المتاحة

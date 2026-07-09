@@ -1,8 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
 import {
   LayoutDashboard,
   Users,
@@ -30,6 +30,14 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [newLeads, setNewLeads] = useState(0);
+
+  useEffect(() => {
+    fetch("/api/leads/stats", { credentials: "include" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((s) => setNewLeads(s?.byStatus?.new ?? 0))
+      .catch(() => setNewLeads(0));
+  }, [pathname]);
 
   if (pathname === "/admin/login") {
     return <>{children}</>;
@@ -64,7 +72,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
           const className = cn(
             "flex items-center gap-3 rounded-xl px-4 py-3 text-sm transition",
             active
-              ? "bg-gold/15 font-medium text-gold shadow-[inset_0_0_0_1px_rgba(201,162,39,0.2)]"
+              ? "bg-black/10 font-medium text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]"
               : "text-white/55 hover:bg-white/5 hover:text-white",
           );
 
@@ -82,6 +90,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)} className={className}>
               <item.icon className="h-4 w-4" />
               {item.label}
+              {item.href === "/admin/leads" && newLeads > 0 ? (
+                <span className="ms-auto rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                  {newLeads}
+                </span>
+              ) : null}
             </Link>
           );
         })}
@@ -124,7 +137,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="hidden items-center gap-1.5 rounded-full bg-gold/10 px-3 py-1 text-[10px] font-medium text-gold sm:flex">
+            <span className="hidden items-center gap-1.5 rounded-full bg-black/8 px-3 py-1 text-[10px] font-medium text-black sm:flex">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               متصل
             </span>

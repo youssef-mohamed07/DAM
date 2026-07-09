@@ -28,14 +28,59 @@ export async function tgGetChatAdministrators(chatId: string) {
   return { ok: true as const, members: res.result };
 }
 
+export const TELEGRAM_ALLOWED_UPDATES = [
+  "message",
+  "edited_message",
+  "chat_member",
+  "my_chat_member",
+] as const;
+
 export async function tgGetUpdates(offset?: number) {
   const res = await tgApi<unknown[]>("getUpdates", {
     offset,
     limit: 100,
-    allowed_updates: ["message", "chat_member", "my_chat_member"],
+    allowed_updates: TELEGRAM_ALLOWED_UPDATES,
   });
   if (!res.ok) return { ok: false as const, error: res.error, updates: [] as unknown[] };
   return { ok: true as const, updates: res.result };
+}
+
+export async function tgGetChat(chatId: string) {
+  return tgApi<{ id: number; title?: string; type: string; members_count?: number }>("getChat", {
+    chat_id: chatId,
+  });
+}
+
+export async function tgGetWebhookInfo() {
+  return tgApi<{
+    url?: string;
+    has_custom_certificate?: boolean;
+    pending_update_count?: number;
+    allowed_updates?: string[];
+  }>("getWebhookInfo");
+}
+
+export async function tgDeleteWebhook(dropPending = false) {
+  return tgApi<boolean>("deleteWebhook", { drop_pending_updates: dropPending });
+}
+
+export async function tgSetWebhook(url: string, secretToken?: string) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) return { ok: false as const, error: "no token" };
+
+  const res = await fetch(`${API()}/setWebhook`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      url,
+      secret_token: secretToken || undefined,
+      allowed_updates: [...TELEGRAM_ALLOWED_UPDATES],
+      drop_pending_updates: false,
+    }),
+  });
+  const data = await res.json();
+  if (!data.ok) return { ok: false as const, error: JSON.stringify(data) };
+  return { ok: true as const };
 }
 
 export async function tgSendMessage(
@@ -61,19 +106,4 @@ export async function tgSendMessage(
   const data = await res.json();
   if (!data.ok) return { ok: false as const, error: JSON.stringify(data) };
   return { ok: true as const, data };
-}
-
-export async function tgSetWebhook(url: string) {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  if (!token) return false;
-  const res = await fetch(`${API()}/setWebhook`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      url,
-      allowed_updates: ["message", "chat_member", "my_chat_member"],
-    }),
-  });
-  const data = await res.json();
-  return data.ok === true;
 }

@@ -118,7 +118,7 @@ export default function AdminPropertiesPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 <div className="absolute start-3 top-3 flex flex-wrap gap-1">
                   {p.featured ? (
-                    <span className="rounded-full bg-gold px-2 py-0.5 text-[10px] font-bold text-black">
+                    <span className="rounded-full bg-gold px-2 py-0.5 text-[10px] font-bold text-white">
                       مميز
                     </span>
                   ) : null}

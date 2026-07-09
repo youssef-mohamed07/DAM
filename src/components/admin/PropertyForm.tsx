@@ -21,6 +21,9 @@ export type PropertyFormData = {
   titleEn: string;
   district: string;
   type: string;
+  saleCategory: string;
+  downPaymentPercent: number;
+  installmentYears: number;
   price: number;
   area: number;
   bedrooms: number;
@@ -49,6 +52,9 @@ export function propertyToForm(p?: Property): PropertyFormData {
       titleEn: "",
       district: "golf",
       type: "apartment",
+      saleCategory: "primary",
+      downPaymentPercent: 10,
+      installmentYears: 6,
       price: 0,
       area: 120,
       bedrooms: 3,
@@ -75,6 +81,9 @@ export function propertyToForm(p?: Property): PropertyFormData {
     titleEn: p.title.en,
     district: p.district,
     type: p.type,
+    saleCategory: p.saleCategory,
+    downPaymentPercent: p.downPaymentPercent ?? 10,
+    installmentYears: p.installmentYears ?? 6,
     price: p.price,
     area: p.area,
     bedrooms: p.bedrooms,
@@ -103,6 +112,9 @@ export function formToPayload(form: PropertyFormData) {
     titleEn: form.titleEn || form.titleAr,
     district: form.district,
     type: form.type,
+    saleCategory: form.saleCategory,
+    downPaymentPercent: form.saleCategory === "primary" ? Number(form.downPaymentPercent) : undefined,
+    installmentYears: form.saleCategory === "primary" ? Number(form.installmentYears) : undefined,
     price: Number(form.price),
     area: Number(form.area),
     bedrooms: Number(form.bedrooms),
@@ -196,6 +208,39 @@ export function PropertyForm({ initial, onSubmit, submitLabel = "حفظ العق
               ))}
             </select>
           </div>
+          <div>
+            <label className={labelClass}>تصنيف البيع</label>
+            <select
+              className={inputClass}
+              value={form.saleCategory}
+              onChange={(e) => set("saleCategory", e.target.value)}
+            >
+              <option value="primary">أولي (قسط)</option>
+              <option value="resale">إعادة بيع</option>
+            </select>
+          </div>
+          {form.saleCategory === "primary" ? (
+            <>
+              <div>
+                <label className={labelClass}>المقدم %</label>
+                <input
+                  type="number"
+                  className={inputClass}
+                  value={form.downPaymentPercent}
+                  onChange={(e) => set("downPaymentPercent", Number(e.target.value))}
+                />
+              </div>
+              <div>
+                <label className={labelClass}>سنوات التقسيط</label>
+                <input
+                  type="number"
+                  className={inputClass}
+                  value={form.installmentYears}
+                  onChange={(e) => set("installmentYears", Number(e.target.value))}
+                />
+              </div>
+            </>
+          ) : null}
           <div>
             <label className={labelClass}>السعر (ج.م)</label>
             <input type="number" className={inputClass} value={form.price} onChange={(e) => set("price", Number(e.target.value))} />
@@ -312,7 +357,7 @@ export function PropertyForm({ initial, onSubmit, submitLabel = "حفظ العق
       <button
         type="submit"
         disabled={saving}
-        className="w-full rounded-xl bg-gold py-3.5 text-sm font-bold text-black disabled:opacity-50 sm:w-auto sm:px-12"
+        className="w-full rounded-xl bg-gold py-3.5 text-sm font-bold text-white disabled:opacity-50 sm:w-auto sm:px-12"
       >
         {saving ? "جاري الحفظ…" : submitLabel}
       </button>

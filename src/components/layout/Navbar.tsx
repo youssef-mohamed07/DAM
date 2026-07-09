@@ -16,31 +16,36 @@ import {
 } from "lucide-react";
 import { useCompare } from "@/providers/FavoritesProvider";
 import {
-  districtGroups,
   getDistrictsByGroup,
-  premiumDistrictMeta,
   getDistrictOrdinal,
 } from "@/lib/data/districts";
-import { company, whatsappUrl } from "@/lib/data/company";
-import { t, cn } from "@/lib/utils";
+import { whatsappUrl } from "@/lib/data/company";
+import { cn } from "@/lib/utils";
 import { useApp } from "@/providers/AppProvider";
+import { useLocale } from "@/providers/LocaleProvider";
+import { stripLocalePrefix } from "@/lib/i18n/paths";
+import { getPremiumDistrictMeta } from "@/lib/i18n/districts";
 import { Logo } from "@/components/ui/Logo";
-
-const navLinks = [
-  { href: "/properties", label: "العقارات", mega: true },
-  { href: "/about", label: "من نحن" },
-  { href: "/districts", label: "الأحياء" },
-  { href: "/market", label: "السوق" },
-  { href: "/contact", label: "تواصل" },
-];
+import { LanguageSwitcher } from "@/components/layout/LanguageSwitcher";
 
 export function Navbar() {
   const { loaded } = useApp();
+  const { locale, dict, t, path, company: co } = useLocale();
   const pathname = usePathname();
+  const barePath = stripLocalePrefix(pathname);
   const { compare } = useCompare();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [mega, setMega] = useState(false);
+  const premiumMeta = getPremiumDistrictMeta(locale);
+
+  const navLinks: { href: string; label: string; mega?: boolean }[] = [
+    { href: "/properties", label: dict.nav.properties, mega: true },
+    { href: "/dam-family", label: dict.nav.about },
+    { href: "/districts", label: dict.nav.districts },
+    { href: "/market", label: dict.nav.market },
+    { href: "/contact", label: dict.nav.contact },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -55,7 +60,7 @@ export function Navbar() {
 
   const premiumDistricts = getDistrictsByGroup("premium");
   const residentialDistricts = getDistrictsByGroup("residential");
-  const isHomeHero = pathname === "/" && !scrolled;
+  const isHomeHero = barePath === "/" && !scrolled;
 
   return (
     <>
@@ -82,7 +87,8 @@ export function Navbar() {
             <Logo
               size="sm"
               showTagline
-              tagline="عقارات فاخرة"
+              tagline={co.name}
+              href={path("/")}
               taglineClassName={cn(
                 "hidden sm:block",
                 isHomeHero ? "text-white/50" : "text-black/40",
@@ -100,18 +106,18 @@ export function Navbar() {
               {navLinks.map((link) => {
                 const active =
                   link.href === "/properties"
-                    ? pathname.startsWith("/properties")
-                    : pathname === link.href || pathname.startsWith(`${link.href}/`);
+                    ? barePath.startsWith("/properties")
+                    : barePath === link.href || barePath.startsWith(`${link.href}/`);
                 return (
                   <Link
                     key={link.href}
-                    href={link.href}
+                    href={path(link.href)}
                     className={cn(
                       "relative flex items-center gap-1 rounded-full px-4 py-2 text-sm transition-all duration-300",
                       active
                         ? isHomeHero
-                          ? "bg-gold/20 text-gold-bright shadow-inner"
-                          : "bg-gold/15 text-gold shadow-inner"
+                          ? "bg-white/15 text-white shadow-inner"
+                          : "bg-black/8 text-black shadow-inner"
                         : isHomeHero
                           ? "text-white/75 hover:bg-white/10 hover:text-white"
                           : "text-black/60 hover:bg-black/[0.04] hover:text-black",
@@ -126,14 +132,15 @@ export function Navbar() {
             </nav>
 
             <div className="hidden items-center gap-2 lg:flex">
+              <LanguageSwitcher inverted={isHomeHero} />
               <Link
-                href="/properties"
-                aria-label="بحث"
+                href={path("/properties")}
+                aria-label={dict.nav.search}
                 className={cn(
-                  "flex h-9 w-9 items-center justify-center rounded-full border transition hover:border-gold/50 hover:bg-gold/10 hover:text-gold",
+                  "flex h-9 w-9 items-center justify-center rounded-full border transition",
                   isHomeHero
-                    ? "border-white/15 bg-white/8 text-white/70"
-                    : "border-black/10 bg-black/[0.03] text-black/60",
+                    ? "border-white/15 bg-white/8 text-white/70 hover:border-white/40 hover:bg-white/15 hover:text-white"
+                    : "border-black/10 bg-black/[0.03] text-black/60 hover:border-black/25 hover:bg-black/5 hover:text-black",
                 )}
               >
                 <Search className="h-4 w-4" />
@@ -142,34 +149,40 @@ export function Navbar() {
                 href={whatsappUrl()}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 rounded-full bg-gradient-to-l from-gold to-[#e8d48a] px-4 py-2 text-xs font-semibold text-black shadow-[0_4px_20px_rgba(201,162,39,0.35)] transition hover:brightness-110"
+                className={cn(
+                  "flex items-center gap-1.5 rounded-full px-4 py-2 text-xs font-semibold shadow-[0_4px_20px_rgba(0,0,0,0.2)] transition hover:brightness-110",
+                  isHomeHero ? "bg-white text-black" : "bg-black text-white",
+                )}
               >
                 <MessageCircle className="h-3.5 w-3.5" />
-                واتساب
+                {dict.nav.whatsapp}
               </a>
               {compare.length > 0 && (
                 <Link
-                  href="/compare"
-                  className="rounded-full border border-gold/40 bg-gold/15 px-3 py-1.5 text-xs font-bold text-gold"
+                  href={path("/compare")}
+                  className="rounded-full border border-black/15 bg-black/5 px-3 py-1.5 text-xs font-bold text-black"
                 >
-                  {compare.length} مقارنة
+                  {compare.length} {dict.nav.compare}
                 </Link>
               )}
             </div>
 
-            <button
-              type="button"
-              className={cn(
-                "flex h-9 w-9 items-center justify-center rounded-full border lg:hidden",
-                isHomeHero
-                  ? "border-white/15 bg-white/8 text-white"
-                  : "border-black/10 bg-black/[0.03] text-black",
-              )}
-              onClick={() => setOpen(!open)}
-              aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
-            >
-              {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </button>
+            <div className="flex items-center gap-2 lg:hidden">
+              <LanguageSwitcher inverted={isHomeHero} />
+              <button
+                type="button"
+                className={cn(
+                  "flex h-9 w-9 items-center justify-center rounded-full border",
+                  isHomeHero
+                    ? "border-white/15 bg-white/8 text-white"
+                    : "border-black/10 bg-black/[0.03] text-black",
+                )}
+                onClick={() => setOpen(!open)}
+                aria-label={open ? dict.nav.closeMenu : dict.nav.openMenu}
+              >
+                {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              </button>
+            </div>
           </div>
           </div>
         </div>
@@ -188,29 +201,29 @@ export function Navbar() {
                 <div className="grid gap-0 md:grid-cols-2">
                   <div className="border-b border-black/8 p-5 md:border-b-0 md:border-e">
                     <div className="mb-4 flex items-center gap-2">
-                      <Crown className="h-4 w-4 text-gold" />
+                      <Crown className="h-4 w-4 text-black" />
                       <span className="text-sm font-semibold text-[#0a0a0a]">
-                        {districtGroups[0].label}
+                        {dict.districtGroups.premium.label}
                       </span>
-                      <Sparkles className="h-3 w-3 text-gold/60" />
+                      <Sparkles className="h-3 w-3 text-black/40" />
                     </div>
                     <div className="grid grid-cols-2 gap-2">
                       {premiumDistricts.map((d) => {
-                        const meta = premiumDistrictMeta[d.id];
+                        const meta = premiumMeta[d.id as keyof typeof premiumMeta];
                         return (
                           <Link
                             key={d.id}
-                            href={`/properties?district=${d.id}`}
-                            className="group rounded-xl border border-gold/15 bg-ivory p-3 transition hover:border-gold/40 hover:bg-gold/10"
+                            href={path(`/properties?district=${d.id}`)}
+                            className="group rounded-xl border border-black/10 bg-ivory p-3 transition hover:border-black/25 hover:bg-black/5"
                           >
-                            <span className="text-[9px] tracking-wider text-gold/80">
+                            <span className="text-[9px] tracking-wider text-black/50">
                               {meta?.badge}
                             </span>
-                            <p className="mt-1 text-sm font-medium text-[#0a0a0a] group-hover:text-gold">
+                            <p className="mt-1 text-sm font-medium text-[#0a0a0a] group-hover:text-black">
                               {t(d.name)}
                             </p>
                             <p className="mt-0.5 text-[10px] text-black/40">
-                              من {meta?.priceFrom}
+                              {dict.nav.from} {meta?.priceFrom}
                             </p>
                           </Link>
                         );
@@ -222,30 +235,30 @@ export function Navbar() {
                     <div className="mb-4 flex items-center gap-2">
                       <Building2 className="h-4 w-4 text-black/40" />
                       <span className="text-sm font-semibold text-[#0a0a0a]">
-                        {districtGroups[1].label}
+                        {dict.districtGroups.residential.label}
                       </span>
                     </div>
                     <div className="grid grid-cols-3 gap-1.5">
                       {residentialDistricts.map((d) => (
                         <Link
                           key={d.id}
-                          href={`/properties?district=${d.id}`}
-                          className="flex flex-col items-center rounded-lg border border-black/8 bg-ivory px-2 py-2.5 text-center transition hover:border-gold/30 hover:bg-gold/5"
+                          href={path(`/properties?district=${d.id}`)}
+                          className="flex flex-col items-center rounded-lg border border-black/8 bg-ivory px-2 py-2.5 text-center transition hover:border-black/20 hover:bg-black/5"
                         >
-                          <span className="font-serif text-lg text-gold">
+                          <span className="font-serif text-lg text-black">
                             {getDistrictOrdinal(d.id)}
                           </span>
                           <span className="mt-0.5 text-[10px] leading-tight text-black/60">
-                            {t(d.name).replace("الحي ", "")}
+                            {t(d.name).replace(dict.nav.districtPrefix, "")}
                           </span>
                         </Link>
                       ))}
                     </div>
                     <Link
-                      href="/districts"
-                      className="mt-4 block text-center text-xs text-gold/80 transition hover:text-gold"
+                      href={path("/districts")}
+                      className="mt-4 block text-center text-xs text-black/50 transition hover:text-black"
                     >
-                      كل الأحياء ←
+                      {dict.nav.allDistricts}
                     </Link>
                   </div>
                 </div>
@@ -272,7 +285,7 @@ export function Navbar() {
                   transition={{ delay: i * 0.05 }}
                 >
                   <Link
-                    href={link.href}
+                    href={path(link.href)}
                     onClick={() => setOpen(false)}
                     className="block rounded-2xl border border-black/8 bg-white px-5 py-4 font-serif text-2xl text-[#0a0a0a] shadow-sm"
                   >
@@ -282,9 +295,9 @@ export function Navbar() {
               ))}
               <a
                 href={whatsappUrl()}
-                className="mt-4 inline-flex w-fit rounded-full bg-gradient-to-l from-gold to-[#e8d48a] px-6 py-3 text-sm font-semibold text-black"
+                className="mt-4 inline-flex w-fit rounded-full bg-black px-6 py-3 text-sm font-semibold text-white"
               >
-                واتساب
+                {dict.nav.whatsapp}
               </a>
             </nav>
           </motion.div>

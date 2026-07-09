@@ -231,7 +231,7 @@ export default function AdminWhatsAppPage() {
             type="button"
             disabled={selected.size === 0}
             onClick={bulkSendToRep}
-            className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2.5 text-sm font-bold text-black disabled:opacity-40"
+            className="inline-flex items-center gap-2 rounded-xl bg-gold px-4 py-2.5 text-sm font-bold text-white disabled:opacity-40"
           >
             <Send className="h-4 w-4" />
             إرسال للمندوب

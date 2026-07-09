@@ -9,6 +9,9 @@ export const properties: Property[] = [
     title: { en: "Golf City Twin House Golf View", ar: "توين هاوس فيو جولف — جولف سيتي" },
     district: "golf",
     type: "townhouse",
+    saleCategory: "primary",
+    downPaymentPercent: 10,
+    installmentYears: 6,
     price: 18_850_000,
     area: 290,
     bedrooms: 4,
@@ -44,6 +47,9 @@ export const properties: Property[] = [
     title: { en: "Rock Villa Townhouse", ar: "تاون هاوس روك فيلا" },
     district: "rock",
     type: "townhouse",
+    saleCategory: "primary",
+    downPaymentPercent: 10,
+    installmentYears: 8,
     price: 5_600_000,
     area: 255,
     bedrooms: 4,
@@ -79,6 +85,9 @@ export const properties: Property[] = [
     title: { en: "Reveal Obour Apartment", ar: "شقة ريفيل العبور" },
     district: "new",
     type: "apartment",
+    saleCategory: "primary",
+    downPaymentPercent: 15,
+    installmentYears: 5,
     price: 5_387_559,
     area: 177,
     bedrooms: 3,
@@ -114,6 +123,9 @@ export const properties: Property[] = [
     title: { en: "Golf City 220m² Apartment", ar: "شقة ٢٢٠ م² جولف سيتي" },
     district: "golf",
     type: "apartment",
+    saleCategory: "primary",
+    downPaymentPercent: 10,
+    installmentYears: 6,
     price: 6_160_000,
     area: 220,
     bedrooms: 4,
@@ -145,6 +157,9 @@ export const properties: Property[] = [
     title: { en: "Jazeel Residence 2BR", ar: "شقة جزيل ريزيدنس — غرفتين" },
     district: "new",
     type: "apartment",
+    saleCategory: "primary",
+    downPaymentPercent: 10,
+    installmentYears: 8,
     price: 2_440_000,
     area: 120,
     bedrooms: 2,
@@ -176,6 +191,9 @@ export const properties: Property[] = [
     title: { en: "Golf City Corner Townhouse", ar: "تاون هاوس كورنر جولف سيتي" },
     district: "golf",
     type: "townhouse",
+    saleCategory: "primary",
+    downPaymentPercent: 10,
+    installmentYears: 6,
     price: 16_165_000,
     area: 285,
     bedrooms: 4,
@@ -210,6 +228,7 @@ export const properties: Property[] = [
     title: { en: "First District Metro Apartment", ar: "شقة الحي الأول — قرب المترو" },
     district: "first",
     type: "apartment",
+    saleCategory: "resale",
     price: 4_800_000,
     area: 155,
     bedrooms: 3,
@@ -241,6 +260,7 @@ export const properties: Property[] = [
     title: { en: "Rock Villa Signature 553m²", ar: "فيلا روك فيلا ٥٥٣ م²" },
     district: "rock",
     type: "villa",
+    saleCategory: "resale",
     price: 12_500_000,
     area: 553,
     bedrooms: 6,
@@ -284,6 +304,7 @@ export function searchProperties(
     text?: string;
     district?: string;
     type?: string;
+    saleCategory?: string;
     minPrice?: number;
     maxPrice?: number;
     minArea?: number;
@@ -294,6 +315,9 @@ export function searchProperties(
 ) {
   let results = [...(list ?? properties)];
 
+  if (query.saleCategory) {
+    results = results.filter((p) => p.saleCategory === query.saleCategory);
+  }
   if (query.district) {
     results = results.filter((p) => p.district === query.district);
   }

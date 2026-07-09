@@ -10,7 +10,7 @@ export const leadStatusLabels: Record<LeadStatus, string> = {
 
 export const leadStatusColors: Record<LeadStatus, string> = {
   new: "bg-blue-500/10 text-blue-700",
-  assigned: "bg-gold/15 text-gold",
+  assigned: "bg-black/8 text-black",
   contacted: "bg-purple-500/10 text-purple-700",
   won: "bg-emerald-500/10 text-emerald-700",
   lost: "bg-black/8 text-black/45",
@@ -20,6 +20,14 @@ export const leadSourceLabels = {
   property: "صفحة عقار",
   contact: "نموذج تواصل",
   manual: "يدوي",
+  hero: "فورم الهيرو",
+};
+
+export const leadSourceColors: Record<keyof typeof leadSourceLabels, string> = {
+  property: "bg-violet-500/10 text-violet-700",
+  contact: "bg-sky-500/10 text-sky-700",
+  manual: "bg-black/8 text-black/55",
+  hero: "bg-amber-500/10 text-amber-800",
 };
 
 export const notifyStatusLabels: Record<NotifyStatus, string> = {

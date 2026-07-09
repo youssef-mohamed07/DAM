@@ -36,7 +36,7 @@ export function LiveSearch() {
 
         <div className="relative mx-auto max-w-3xl">
           <div className="glass flex items-center gap-3 rounded-2xl px-5 py-4">
-            <Sparkles className="h-5 w-5 shrink-0 text-gold" />
+            <Sparkles className="h-5 w-5 shrink-0 text-white" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
@@ -53,7 +53,7 @@ export function LiveSearch() {
                   key={s}
                   type="button"
                   onClick={() => setQuery(s)}
-                  className="rounded-full border border-white/10 px-4 py-2 text-xs text-white/60 transition hover:border-gold hover:text-gold"
+                  className="rounded-full border border-white/10 px-4 py-2 text-xs text-white/60 transition hover:border-white/40 hover:text-white"
                 >
                   {s}
                 </button>

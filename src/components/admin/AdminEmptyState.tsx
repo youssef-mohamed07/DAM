@@ -19,7 +19,7 @@ export function AdminEmptyState({ icon: Icon, title, description, action }: Prop
       {action ? (
         <Link
           href={action.href}
-          className="mt-5 inline-flex rounded-xl bg-gold px-5 py-2.5 text-sm font-bold text-black transition hover:brightness-110"
+          className="mt-5 inline-flex rounded-xl bg-gold px-5 py-2.5 text-sm font-bold text-white transition hover:brightness-110"
         >
           {action.label}
         </Link>

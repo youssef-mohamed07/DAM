@@ -17,7 +17,7 @@ const accents = {
 };
 
 const iconBg = {
-  gold: "bg-gold/15 text-gold",
+  gold: "bg-black/8 text-black",
   blue: "bg-blue-500/10 text-blue-600",
   emerald: "bg-emerald-500/10 text-emerald-600",
   purple: "bg-purple-500/10 text-purple-600",

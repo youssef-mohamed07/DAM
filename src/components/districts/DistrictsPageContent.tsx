@@ -16,13 +16,14 @@ import {
   districtGroups,
   getDistrictsByGroup,
   getDistrictOrdinal,
-  premiumDistrictMeta,
 } from "@/lib/data/districts";
 import { formatPrice } from "@/lib/data/properties";
-import { company } from "@/lib/data/company";
-import { t } from "@/lib/utils";
+import { useLocale } from "@/providers/LocaleProvider";
+import { getPremiumDistrictMeta } from "@/lib/i18n/districts";
 
 export function DistrictsPageContent() {
+  const { t, path, company: co, dict, locale } = useLocale();
+  const premiumMeta = getPremiumDistrictMeta(locale);
   const premium = getDistrictsByGroup("premium");
   const residential = getDistrictsByGroup("residential");
 
@@ -30,19 +31,16 @@ export function DistrictsPageContent() {
     <div className="min-h-screen w-full max-w-full overflow-x-clip bg-white">
       <section className="border-b border-black/8 pt-24">
         <div className="dam-container dam-section-gap">
-          <p className="text-[11px] font-semibold tracking-[0.4em] text-gold uppercase">
-            مدينة العبور
+          <p className="text-[11px] font-semibold tracking-[0.4em] text-black uppercase">
+            {dict.districtsPage.eyebrow}
           </p>
           <h1 className="font-serif mt-4 max-w-3xl text-balance text-3xl text-[#0a0a0a] sm:text-4xl md:text-6xl">
-            ١٣ منطقة — من الأحياء السكنية إلى الكمبوندات الفاخرة
+            {dict.districtsPage.title}
           </h1>
-          <p className="mt-5 max-w-2xl text-lg text-[#0a0a0a]/55">
-            ٩ أحياء سكنية + ٤ مشاريع فاخرة على مساحة ١٦,٠٠٠ فدان. استكشف كل منطقة على
-            الخريطة واطّلع على الأسعار والمرافق.
-          </p>
+          <p className="mt-5 max-w-2xl text-lg text-[#0a0a0a]/55">{dict.districtsPage.lead}</p>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            {company.stats.slice(1, 3).map((s) => (
+            {co.stats.slice(1, 3).map((s) => (
               <div
                 key={s.label}
                 className="rounded-2xl border border-black/10 bg-ivory px-5 py-3"
@@ -63,12 +61,12 @@ export function DistrictsPageContent() {
             <div className="mb-6 flex items-center gap-2">
               <Crown className="h-5 w-5 text-gold" />
               <h2 className="font-serif text-2xl text-[#0a0a0a] md:text-3xl">
-                {districtGroups[0].label}
+                {dict.districtGroups.premium.label}
               </h2>
             </div>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {premium.map((d, i) => {
-                const meta = premiumDistrictMeta[d.id];
+                const meta = premiumMeta[d.id as keyof typeof premiumMeta];
                 return (
                   <motion.article
                     key={d.id}
@@ -117,7 +115,7 @@ export function DistrictsPageContent() {
             <div className="mb-6 flex items-center gap-2">
               <Building2 className="h-5 w-5 text-black/60" />
               <h2 className="font-serif text-2xl text-[#0a0a0a] md:text-3xl">
-                {districtGroups[1].label}
+                {dict.districtGroups.residential.label}
               </h2>
             </div>
             <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-9">
@@ -147,7 +145,7 @@ export function DistrictsPageContent() {
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {company.obourFacts.slice(0, 3).map((f) => (
+            {co.obourFacts.slice(0, 3).map((f) => (
               <div key={f.title} className="dam-card-dark rounded-2xl p-5">
                 <div className="flex items-center gap-2">
                   <MapPin className="h-4 w-4 text-gold" />

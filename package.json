@@ -14,7 +14,9 @@
     "db:studio": "node --env-file=.env.local -- ./node_modules/.bin/prisma studio",
     "db:seed": "node --env-file=.env.local -- ./node_modules/.bin/tsx prisma/seed.ts",
     "telegram:test": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-test.ts",
-    "telegram:sync": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-sync-members.ts"
+    "telegram:sync": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-sync-members.ts",
+    "telegram:setup": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-setup.ts",
+    "telegram:poll": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-poll.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",

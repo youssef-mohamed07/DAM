@@ -31,6 +31,8 @@ import {
   districtLabel,
   deliveryLabel,
 } from "@/lib/utils";
+import { saleCategoryLabel, formatPaymentPlan } from "@/lib/properties/sale-category";
+import { useLocale } from "@/providers/LocaleProvider";
 
 export default function PropertyDetailPage({
   params,
@@ -38,6 +40,7 @@ export default function PropertyDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = use(params);
+  const { locale, dict } = useLocale();
   const { property, loading } = usePropertyBySlug(slug);
   const { toggleFavorite, isFavorite, addRecent } = useFavorites();
   const { addToCompare } = useCompare();
@@ -54,6 +57,8 @@ export default function PropertyDetailPage({
 
   const agent = agents.find((a) => a.id === property.agentId);
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${property.lat},${property.lng}`;
+  const paymentPlan = formatPaymentPlan(property, locale);
+  const categoryLabel = saleCategoryLabel(property.saleCategory, locale);
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-clip bg-white pt-24 sm:pt-28">
@@ -63,7 +68,7 @@ export default function PropertyDetailPage({
         <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8 md:p-16">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
             <p className="text-[10px] tracking-[0.3em] text-gold uppercase sm:text-xs sm:tracking-[0.4em]">
-              {propertyTypeLabel(property.type)} · {districtLabel(property.district)}
+              {categoryLabel} · {propertyTypeLabel(property.type)} · {districtLabel(property.district)}
             </p>
             <h1 className="font-serif mt-2 text-balance text-2xl text-white sm:text-3xl md:text-4xl lg:text-6xl">
               {t(property.title)}
@@ -158,6 +163,12 @@ export default function PropertyDetailPage({
                 </div>
               </div>
               <div className="mt-6 space-y-2 text-sm text-black/55">
+                <p>
+                  {dict.propertiesPage.paymentPlan}:{" "}
+                  <span className="text-gold">
+                    {paymentPlan ?? dict.propertiesPage.cashSale}
+                  </span>
+                </p>
                 <p>العائد: <span className="text-gold">{property.roi}٪</span></p>
                 <p>التشطيب: {t(property.finishing)}</p>
                 <p>التسليم: {deliveryLabel(property.delivery)}</p>
@@ -181,11 +192,11 @@ export default function PropertyDetailPage({
                     propertyId={property.id}
                     propertySlug={property.slug}
                     propertyTitle={t(property.title)}
-                    className="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-gold py-3 text-sm font-bold text-black transition hover:brightness-110"
+                    className="col-span-2 flex items-center justify-center gap-2 rounded-xl bg-gold py-3 text-sm font-bold text-white transition hover:brightness-110"
                   />
                   <a
                     href={`tel:${company.phone}`}
-                    className="flex items-center justify-center gap-2 rounded-xl bg-gold py-3 text-sm font-medium text-black"
+                    className="flex items-center justify-center gap-2 rounded-xl bg-gold py-3 text-sm font-medium text-white"
                   >
                     <Phone className="h-4 w-4" /> اتصال
                   </a>

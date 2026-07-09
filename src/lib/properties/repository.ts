@@ -43,6 +43,7 @@ export function searchPropertiesList(
     text?: string;
     district?: string;
     type?: string;
+    saleCategory?: string;
     minPrice?: number;
     maxPrice?: number;
     minArea?: number;
@@ -51,6 +52,7 @@ export function searchPropertiesList(
   },
 ) {
   let results = [...list];
+  if (query.saleCategory) results = results.filter((p) => p.saleCategory === query.saleCategory);
   if (query.district) results = results.filter((p) => p.district === query.district);
   if (query.type) results = results.filter((p) => p.type === query.type);
   if (query.minPrice) results = results.filter((p) => p.price >= query.minPrice!);
@@ -67,6 +69,9 @@ export type PropertyInput = {
   titleEn?: string;
   district: string;
   type: string;
+  saleCategory?: string;
+  downPaymentPercent?: number;
+  installmentYears?: number;
   price: number;
   area: number;
   bedrooms: number;
@@ -100,6 +105,9 @@ export async function createProperty(input: PropertyInput) {
       titleEn: input.titleEn ?? input.titleAr,
       district: input.district,
       type: input.type,
+      saleCategory: input.saleCategory ?? "primary",
+      downPaymentPercent: input.downPaymentPercent ?? null,
+      installmentYears: input.installmentYears ?? null,
       price: input.price,
       area: input.area,
       bedrooms: input.bedrooms,
@@ -135,6 +143,9 @@ export async function updateProperty(id: string, input: Partial<PropertyInput>) 
       ...(input.titleEn !== undefined ? { titleEn: input.titleEn } : {}),
       ...(input.district !== undefined ? { district: input.district } : {}),
       ...(input.type !== undefined ? { type: input.type } : {}),
+      ...(input.saleCategory !== undefined ? { saleCategory: input.saleCategory } : {}),
+      ...(input.downPaymentPercent !== undefined ? { downPaymentPercent: input.downPaymentPercent } : {}),
+      ...(input.installmentYears !== undefined ? { installmentYears: input.installmentYears } : {}),
       ...(input.price !== undefined ? { price: input.price } : {}),
       ...(input.area !== undefined ? { area: input.area } : {}),
       ...(input.bedrooms !== undefined ? { bedrooms: input.bedrooms } : {}),

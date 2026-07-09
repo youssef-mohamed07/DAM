@@ -24,12 +24,14 @@ import { company, whatsappUrl, facebookUrl } from "@/lib/data/company";
 import { PropertyCard } from "@/components/property/PropertyCard";
 import { formatPrice } from "@/lib/data/properties";
 import { useProperties } from "@/providers/PropertiesProvider";
-import { t, formatPhoneIntl, formatPhoneLocal } from "@/lib/utils";
+import { useLocale } from "@/providers/LocaleProvider";
+import { formatPhoneIntl, formatPhoneLocal } from "@/lib/utils";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Num } from "@/components/ui/Num";
 
 export function FeaturedProperties() {
   const { properties } = useProperties();
+  const { path, dict } = useLocale();
   const featured = properties.filter((p) => p.featured);
   const [hero, ...rest] = featured.length ? featured : properties.slice(0, 3);
 
@@ -38,19 +40,19 @@ export function FeaturedProperties() {
       <div className="dam-container relative">
         <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <SectionHeader
-            label={{ en: "", ar: "المجموعة" }}
-            title={{ en: "", ar: "عقارات مختارة في العبور" }}
+            label={{ en: "Collection", ar: "المجموعة" }}
+            title={{ en: "Selected properties in Obour", ar: "عقارات مختارة في العبور" }}
             description={{
-              en: "",
+              en: "Real listings in Golf City, Rock Villa, and Reveal Obour — updated pricing and flexible payment plans.",
               ar: "وحدات حقيقية في جولف سيتي وروك فيلا وريفيل العبور — بأسعار محدثة وأنظمة سداد مرنة.",
             }}
             className="mb-0"
           />
           <Link
-            href="/properties"
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-gold/30 px-5 py-2.5 text-sm text-gold transition hover:bg-gold hover:text-black"
+            href={path("/properties")}
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-black/20 px-5 py-2.5 text-sm text-black transition hover:bg-black hover:text-white"
           >
-            عرض الكل ({properties.length})
+            {dict.viewAll} ({properties.length})
             <ChevronLeft className="h-4 w-4" />
           </Link>
         </div>
@@ -71,18 +73,19 @@ export function FeaturedProperties() {
 }
 
 export function InvestmentDashboard() {
-  const growth = company.marketStats[1];
-  const yieldStat = company.marketStats[3];
+  const { company: co, path, dict } = useLocale();
+  const growth = co.marketStats[1];
+  const yieldStat = co.marketStats[3];
 
   return (
     <section id="investment" className="dam-section-gap dam-ivory dam-section-split-light">
       <div className="dam-container relative">
         <div className="mb-10 flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <SectionHeader
-            label={{ en: "", ar: "السوق" }}
-            title={{ en: "", ar: "أبرز مشاريع العبور" }}
+            label={{ en: "Market", ar: "السوق" }}
+            title={{ en: "Top Obour projects", ar: "أبرز مشاريع العبور" }}
             description={{
-              en: "",
+              en: "Starting prices and payment plans — Golf City, Rock Villa, Reveal, and Jazeel.",
               ar: "أسعار البدء وأنظمة السداد — جولف سيتي، روك فيلا، ريفيل، وجزيل.",
             }}
             light
@@ -108,7 +111,7 @@ export function InvestmentDashboard() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {company.projects.map((project, i) => (
+          {co.projects.map((project, i) => (
             <motion.article
               key={project.id}
               initial={{ opacity: 0, y: 20 }}
@@ -117,8 +120,8 @@ export function InvestmentDashboard() {
               transition={{ delay: i * 0.07 }}
               className="dam-district-premium group flex flex-col p-6"
             >
-              <p className="text-[10px] font-medium tracking-[0.2em] text-gold uppercase">
-                يبدأ من
+              <p className="text-[10px] font-medium tracking-[0.2em] text-black uppercase">
+                {dict.priceFrom}
               </p>
               <p className="font-serif mt-2 text-2xl text-[#0a0a0a] transition group-hover:text-gold">
                 {project.priceFrom}
@@ -140,10 +143,10 @@ export function InvestmentDashboard() {
 
         <div className="mt-10 flex justify-center">
           <Link
-            href="/properties"
-            className="inline-flex items-center gap-2 rounded-full bg-[#0a0a0a] px-6 py-2.5 text-sm text-white transition hover:bg-gold hover:text-black"
+            href={path("/properties")}
+            className="inline-flex items-center gap-2 rounded-full bg-[#0a0a0a] px-6 py-2.5 text-sm text-white transition hover:bg-white hover:text-black"
           >
-            استكشف كل العقارات
+            {dict.hero.explore}
             <ChevronLeft className="h-4 w-4" />
           </Link>
         </div>
@@ -153,16 +156,17 @@ export function InvestmentDashboard() {
 }
 
 export function TestimonialsSection() {
+  const { t } = useLocale();
   const [featured, ...others] = testimonials;
 
   return (
     <section className="dam-section-gap dam-section-dark dam-section-split">
       <div className="dam-container relative">
         <SectionHeader
-          label={{ en: "", ar: "عملاؤنا" }}
-          title={{ en: "", ar: "ماذا يقول المشترون" }}
+          label={{ en: "Clients", ar: "عملاؤنا" }}
+          title={{ en: "What buyers say", ar: "ماذا يقول المشترون" }}
           description={{
-            en: "",
+            en: "Real experiences from clients who bought through DAM in Golf City, Rock Villa, and Reveal Obour.",
             ar: "تجارب حقيقية من عملاء اشتروا عبر DAM في جولف سيتي وروك فيلا وريفيل العبور.",
           }}
           align="center"
@@ -179,7 +183,7 @@ export function TestimonialsSection() {
             <div>
               <div className="flex gap-1">
                 {Array.from({ length: featured.rating }).map((_, j) => (
-                  <Star key={j} className="h-4 w-4 fill-gold text-gold" />
+                  <Star key={j} className="h-4 w-4 fill-black text-black" />
                 ))}
               </div>
               <p className="font-serif mt-6 text-2xl leading-relaxed text-[#0a0a0a] md:text-3xl">
@@ -202,7 +206,7 @@ export function TestimonialsSection() {
               <div key={item.id} className="dam-card-dark rounded-2xl p-6">
                 <div className="flex gap-1">
                   {Array.from({ length: item.rating }).map((_, j) => (
-                    <Star key={j} className="h-3 w-3 fill-gold text-gold" />
+                    <Star key={j} className="h-3 w-3 fill-black text-black" />
                   ))}
                 </div>
                 <p className="mt-3 text-sm leading-relaxed text-black/60">
@@ -219,22 +223,27 @@ export function TestimonialsSection() {
 }
 
 export function AgentsSection() {
+  const { company: co, dict, locale } = useLocale();
   const areaIcons = {
     golf: Landmark,
     rock: Home,
     "new-obour": Building2,
     finance: Scale,
   } as const;
+  const waMsg =
+    locale === "en"
+      ? "Hello, I'd like a real estate consultation in Obour."
+      : "مرحباً، أريد استشارة عقارية في العبور";
 
   return (
     <section className="dam-section-gap dam-ivory dam-section-split-light">
       <div className="dam-container">
         <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <SectionHeader
-            label={{ en: "", ar: "استشارة" }}
-            title={{ en: "", ar: "كيف نساعدك؟" }}
+            label={{ en: "Consultation", ar: "استشارة" }}
+            title={{ en: "How can we help?", ar: "كيف نساعدك؟" }}
             description={{
-              en: "",
+              en: "Expertise in every district and project — speak directly with the DAM team.",
               ar: "تخصص في كل منطقة ومشروع — تواصل مباشرة مع فريق DAM.",
             }}
             light
@@ -242,11 +251,11 @@ export function AgentsSection() {
           />
           <div className="flex flex-wrap gap-3">
             <a
-              href={whatsappUrl("مرحباً، أريد استشارة عقارية في العبور")}
-              className="inline-flex items-center gap-2 rounded-full bg-[#0a0a0a] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-gold hover:text-black"
+              href={whatsappUrl(waMsg)}
+              className="inline-flex items-center gap-2 rounded-full bg-[#0a0a0a] px-6 py-2.5 text-sm font-medium text-white transition hover:bg-white hover:text-black"
             >
               <MessageCircle className="h-4 w-4" />
-              واتساب
+              {dict.nav.whatsapp}
             </a>
             <a
               href={`tel:${company.phone}`}
@@ -259,7 +268,7 @@ export function AgentsSection() {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {company.consultationAreas.map((area, i) => {
+          {co.consultationAreas.map((area, i) => {
             const Icon = areaIcons[area.id as keyof typeof areaIcons] ?? Building2;
             return (
               <motion.article
@@ -268,7 +277,7 @@ export function AgentsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.06 }}
-                className="rounded-2xl border border-black/[0.06] bg-white p-6 transition hover:border-gold/30 hover:shadow-[0_8px_32px_rgba(201,162,39,0.08)]"
+                className="rounded-2xl border border-black/[0.06] bg-white p-6 transition hover:border-black/15 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)]"
               >
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-gold/25 bg-gold/10">
                   <Icon className="h-5 w-5 text-gold" />
@@ -285,16 +294,17 @@ export function AgentsSection() {
 }
 
 export function FAQSection() {
+  const { t } = useLocale();
   const [open, setOpen] = useState<number | null>(0);
 
   return (
     <section className="dam-section-gap dam-section-dark dam-section-split">
       <div className="dam-container relative max-w-3xl">
         <SectionHeader
-          label={{ en: "", ar: "الأسئلة الشائعة" }}
-          title={{ en: "", ar: "كل ما تحتاج معرفته" }}
+          label={{ en: "FAQ", ar: "الأسئلة الشائعة" }}
+          title={{ en: "Everything you need to know", ar: "كل ما تحتاج معرفته" }}
           description={{
-            en: "",
+            en: "Answers on pricing, financing, and projects in Obour City.",
             ar: "إجابات عن الأسعار والتمويل والمشاريع في مدينة العبور.",
           }}
           align="center"
@@ -364,7 +374,7 @@ export function ContactCTA() {
           <div className="relative mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-black transition hover:brightness-110"
+              className="inline-flex items-center gap-2 rounded-full bg-gold px-8 py-3.5 text-sm font-semibold text-white transition hover:brightness-110"
             >
               تواصل معنا
               <ArrowLeft className="h-4 w-4" />
@@ -403,10 +413,10 @@ export function ContactSection() {
       <div className="dam-container grid gap-12 lg:grid-cols-2">
         <div>
           <SectionHeader
-            label={{ en: "", ar: "تواصل" }}
-            title={{ en: "", ar: "تواصل معنا" }}
+            label={{ en: "Contact", ar: "تواصل" }}
+            title={{ en: "Get in touch", ar: "تواصل معنا" }}
             description={{
-              en: "",
+              en: "Tell us what you're looking for — we reply within one business day.",
               ar: "أخبرنا بما تبحث عنه — نرد خلال يوم عمل واحد.",
             }}
             light
@@ -419,27 +429,27 @@ export function ContactSection() {
                   key={f.key}
                   rows={4}
                   placeholder={f.label}
-                  className="w-full resize-none rounded-xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-gold"
+                  className="w-full resize-none rounded-xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-black"
                 />
               ) : (
                 <input
                   key={f.key}
                   type={f.key === "email" ? "email" : "text"}
                   placeholder={f.label}
-                  className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-gold"
+                  className="w-full rounded-xl border border-black/10 bg-white px-4 py-3 outline-none focus:border-black"
                 />
               ),
             )}
             <button
               type="button"
-              className="w-full rounded-xl bg-[#0a0a0a] py-4 font-semibold text-white transition hover:bg-gold hover:text-black"
+              className="w-full rounded-xl bg-[#0a0a0a] py-4 font-semibold text-white transition hover:bg-white hover:text-black"
             >
               إرسال
             </button>
           </form>
         </div>
         <div className="rounded-3xl bg-[#0a0a0a] p-8 text-white md:p-10">
-          <h3 className="font-serif text-2xl text-gold">{company.name}</h3>
+          <h3 className="font-serif text-2xl text-white">{company.name}</h3>
           <p className="mt-4 text-white/55">{company.address}</p>
           <p className="mt-1 text-sm text-white/40">{company.addressDetail}</p>
           <p className="mt-4 text-white/55">{company.hours}</p>
@@ -452,7 +462,7 @@ export function ContactSection() {
               href={facebookUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-gold transition hover:underline"
+              className="inline-flex items-center gap-2 text-white transition hover:underline"
             >
               صفحتنا على فيسبوك
             </a>
@@ -475,8 +485,8 @@ export function MortgageSection() {
     <section className="dam-section dam-section-dark">
       <div className="dam-container max-w-xl">
         <SectionHeader
-          label={{ en: "", ar: "أدوات" }}
-          title={{ en: "", ar: "حاسبة التمويل" }}
+          label={{ en: "Tools", ar: "أدوات" }}
+          title={{ en: "Mortgage calculator", ar: "حاسبة التمويل" }}
           align="center"
           className="mb-8"
         />

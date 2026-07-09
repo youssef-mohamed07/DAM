@@ -1,6 +1,6 @@
 export type LeadStatus = "new" | "assigned" | "contacted" | "won" | "lost";
 
-export type LeadSource = "property" | "contact" | "manual";
+export type LeadSource = "property" | "contact" | "manual" | "hero";
 
 export type NotifyStatus = "pending" | "sent" | "failed" | "skipped";
 
@@ -42,6 +42,7 @@ export interface CreateLeadInput {
   propertyType?: string;
   budget?: string;
   district?: string;
+  notes?: string;
 }
 
 export interface LeadCreateResponse {

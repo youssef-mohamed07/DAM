@@ -18,6 +18,7 @@ const sourceMeta: Record<LeadSource, { icon: string; label: string }> = {
   property: { icon: "🏠", label: leadSourceLabels.property },
   contact: { icon: "📝", label: leadSourceLabels.contact },
   manual: { icon: "✍️", label: leadSourceLabels.manual },
+  hero: { icon: "✨", label: leadSourceLabels.hero },
 };
 
 function formatLeadTime(iso: string) {

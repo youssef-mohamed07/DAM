@@ -20,6 +20,8 @@ import { districts } from "@/lib/data/districts";
 import { t, cn, formatPhoneIntl, formatPhoneLocal } from "@/lib/utils";
 import { Num } from "@/components/ui/Num";
 import { submitLead } from "@/lib/leads/client";
+import { useLocale } from "@/providers/LocaleProvider";
+import type { Bilingual } from "@/lib/i18n/translate";
 
 const goals = [
   { id: "buy", label: "شراء للسكن" },
@@ -52,8 +54,10 @@ export function ContactPageContent({
 }: {
   propertySlug?: string;
   propertyId?: string;
-  propertyTitle?: string;
+  propertyTitle?: Bilingual;
 }) {
+  const { t, path, dict, company: co, locale } = useLocale();
+  const displayTitle = propertyTitle ? t(propertyTitle) : undefined;
   const [goal, setGoal] = useState<GoalId>("buy");
   const [propertyType, setPropertyType] = useState<PropertyTypeId>("apartment");
   const [budget, setBudget] = useState(budgets[2]);
@@ -74,7 +78,7 @@ export function ContactPageContent({
     return [
       "مرحباً DAM Properties،",
       "",
-      propertyTitle && `العقار: ${propertyTitle}`,
+      displayTitle && `العقار: ${displayTitle}`,
       `الهدف: ${goalLabel}`,
       `نوع العقار: ${typeLabel}`,
       `الميزانية: ${budget}`,
@@ -96,7 +100,7 @@ export function ContactPageContent({
       source: "contact",
       propertyId,
       propertySlug,
-      propertyTitle,
+      propertyTitle: displayTitle,
       clientName: name,
       clientPhone: phone,
       clientEmail: email || undefined,
@@ -112,8 +116,8 @@ export function ContactPageContent({
 
   return (
     <div className="relative min-h-screen w-full max-w-full overflow-x-clip bg-white pt-24">
-      <div className="pointer-events-none absolute -start-32 top-20 h-96 w-96 rounded-full bg-gold/10 blur-3xl" />
-      <div className="pointer-events-none absolute -end-24 bottom-0 h-80 w-80 rounded-full bg-gold/8 blur-3xl" />
+      <div className="pointer-events-none absolute -start-32 top-20 h-96 w-96 rounded-full bg-black/5 blur-3xl" />
+      <div className="pointer-events-none absolute -end-24 bottom-0 h-80 w-80 rounded-full bg-black/4 blur-3xl" />
 
       <div className="dam-container relative pb-20 pt-8 md:pb-28 md:pt-12">
         <div className="grid min-w-0 gap-12 lg:grid-cols-12 lg:gap-16">
@@ -124,16 +128,16 @@ export function ContactPageContent({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
             >
-              <div className="inline-flex items-center gap-2 rounded-full border border-gold/25 bg-gold/10 px-4 py-1.5 text-xs text-gold">
+              <div className="inline-flex items-center gap-2 rounded-full border border-black/12 bg-black/5 px-4 py-1.5 text-xs text-black">
                 <Sparkles className="h-3.5 w-3.5" />
                 استشارة مجانية
               </div>
               <h1 className="font-serif mt-6 text-4xl leading-[1.15] text-[#0a0a0a] md:text-5xl lg:text-[3.25rem]">
-                {propertyTitle ? (
+                {displayTitle ? (
                   <>
                     استفسار عن
                     <br />
-                    <span className="text-gradient-gold italic">{propertyTitle}</span>
+                    <span className="text-gradient-gold italic">{displayTitle}</span>
                   </>
                 ) : (
                   <>
@@ -254,8 +258,8 @@ export function ContactPageContent({
                             className={cn(
                               "rounded-full border px-5 py-2.5 text-sm transition-all duration-300",
                               goal === g.id
-                                ? "border-gold bg-gold text-black shadow-[0_4px_24px_rgba(201,162,39,0.35)]"
-                                : "border-black/15 text-black/60 hover:border-gold/40 hover:text-[#0a0a0a]",
+                                ? "border-black bg-black text-white shadow-[0_4px_24px_rgba(0,0,0,0.15)]"
+                                : "border-black/15 text-black/60 hover:border-black/30 hover:text-black",
                             )}
                           >
                             {g.label}
@@ -277,8 +281,8 @@ export function ContactPageContent({
                             className={cn(
                               "rounded-xl border py-3 text-sm transition-all",
                               propertyType === p.id
-                                ? "border-gold/50 bg-gold/15 text-gold"
-                                : "border-black/10 text-black/55 hover:border-white/25",
+                                ? "border-black bg-black/8 text-black"
+                                : "border-black/10 text-black/55 hover:border-black/25",
                             )}
                           >
                             {p.label}
@@ -375,7 +379,7 @@ export function ContactPageContent({
                     <div className="flex flex-col gap-3 sm:flex-row">
                       <button
                         type="submit"
-                        className="group flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-l from-gold to-[#e8d48a] py-4 text-sm font-semibold text-black shadow-[0_8px_32px_rgba(201,162,39,0.4)] transition hover:brightness-110"
+                        className="group flex flex-1 items-center justify-center gap-2 rounded-2xl bg-black py-4 text-sm font-semibold text-white shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition hover:bg-black/90"
                       >
                         <Send className="h-4 w-4 transition group-hover:-translate-x-0.5" />
                         إرسال الطلب

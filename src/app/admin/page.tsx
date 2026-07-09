@@ -26,17 +26,19 @@ import {
   Cell,
 } from "recharts";
 import { fetchLeadStats } from "@/lib/leads/client";
-import { leadStatusLabels, leadStatusColors } from "@/lib/leads/labels";
+import { leadStatusLabels, leadStatusColors, leadSourceLabels } from "@/lib/leads/labels";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminStatCard } from "@/components/admin/AdminStatCard";
 import type { Lead, LeadStatus } from "@/types/leads";
 
-const CHART_COLORS = ["#3b82f6", "#c9a227", "#8b5cf6", "#10b981", "#6b7280"];
+const CHART_COLORS = ["#3b82f6", "#000000", "#8b5cf6", "#10b981", "#6b7280"];
 
 export default function AdminPage() {
   const [stats, setStats] = useState<{
     total: number;
+    todayCount?: number;
     byStatus: Record<string, number>;
+    bySource?: Record<string, number>;
     recent: Lead[];
   } | null>(null);
   const [propertyCount, setPropertyCount] = useState<number | null>(null);
@@ -54,6 +56,16 @@ export default function AdminPage() {
       })
       .catch(() => setPropertyCount(null));
   }, []);
+
+  const sourceChart = useMemo(() => {
+    if (!stats?.bySource) return [];
+    return [
+      { name: "فورم الهيرو", value: stats.bySource.hero ?? 0 },
+      { name: "صفحة عقار", value: stats.bySource.property ?? 0 },
+      { name: "تواصل", value: stats.bySource.contact ?? 0 },
+      { name: "يدوي", value: stats.bySource.manual ?? 0 },
+    ].filter((d) => d.value > 0);
+  }, [stats]);
 
   const statusChart = useMemo(() => {
     if (!stats) return [];
@@ -75,9 +87,10 @@ export default function AdminPage() {
         description="متابعة العملاء والمبيعات والعقارات"
       />
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <AdminStatCard label="إجمالي العملاء" value={stats?.total ?? "—"} icon={MessageSquare} accent="blue" />
-        <AdminStatCard label="عملاء جدد" value={stats?.byStatus?.new ?? 0} icon={TrendingUp} accent="gold" />
+        <AdminStatCard label="اليوم" value={stats?.todayCount ?? 0} icon={TrendingUp} accent="gold" trend="جديد" />
+        <AdminStatCard label="فورم الهيرو" value={stats?.bySource?.hero ?? 0} icon={Sparkles} accent="purple" />
         <AdminStatCard label="مُعيَّن للسيلز" value={stats?.byStatus?.assigned ?? 0} icon={Users} accent="purple" />
         <AdminStatCard label="نسبة الإغلاق" value={`${conversionRate}%`} icon={CheckCircle2} accent="emerald" />
       </div>
@@ -99,7 +112,7 @@ export default function AdminPage() {
                   <XAxis dataKey="name" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                   <YAxis allowDecimals={false} tick={{ fontSize: 11 }} axisLine={false} tickLine={false} />
                   <Tooltip contentStyle={{ borderRadius: 12, border: "1px solid #00000010", fontSize: 12 }} />
-                  <Bar dataKey="value" fill="#c9a227" radius={[8, 8, 0, 0]} maxBarSize={48} />
+                  <Bar dataKey="value" fill="#000000" radius={[8, 8, 0, 0]} maxBarSize={48} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
@@ -111,22 +124,22 @@ export default function AdminPage() {
         </div>
 
         <div className="dam-card-elevated min-w-0 rounded-2xl p-4 sm:p-6">
-          <h2 className="font-semibold text-[#0a0a0a]">الحالات</h2>
+          <h2 className="font-semibold text-[#0a0a0a]">مصادر العملاء</h2>
           <div className="mt-4 h-52">
-            {stats && stats.total > 0 ? (
+            {sourceChart.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
-                    data={statusChart.filter((d) => d.value > 0)}
+                    data={sourceChart}
                     dataKey="value"
                     nameKey="name"
                     cx="50%"
                     cy="50%"
-                    innerRadius={48}
-                    outerRadius={72}
-                    paddingAngle={4}
+                    innerRadius={40}
+                    outerRadius={68}
+                    paddingAngle={3}
                   >
-                    {statusChart.map((_, i) => (
+                    {sourceChart.map((_, i) => (
                       <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                     ))}
                   </Pie>
@@ -134,9 +147,14 @@ export default function AdminPage() {
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex h-full items-center justify-center text-sm text-black/30">لا توجد بيانات</div>
+              <div className="flex h-full items-center justify-center text-sm text-black/30">
+                لا توجد بيانات مصادر بعد
+              </div>
             )}
           </div>
+          <Link href="/admin/leads" className="mt-2 inline-block text-xs font-medium text-gold hover:underline">
+            فتح CRM العملاء
+          </Link>
         </div>
       </div>
 
@@ -152,6 +170,8 @@ export default function AdminPage() {
                 <tr className="border-b border-black/6 bg-ivory/40 text-[11px] text-black/40">
                   <th className="px-6 py-3 text-start font-medium">العميل</th>
                   <th className="px-6 py-3 text-start font-medium">العقار</th>
+                  <th className="px-6 py-3 text-start font-medium">المصدر</th>
+                  <th className="px-6 py-3 text-start font-medium">الهاتف</th>
                   <th className="px-6 py-3 text-start font-medium">الحالة</th>
                   <th className="px-6 py-3 text-start font-medium">التاريخ</th>
                 </tr>
@@ -159,7 +179,7 @@ export default function AdminPage() {
               <tbody>
                 {(stats?.recent ?? []).length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="px-6 py-12 text-center text-black/35">لا يوجد عملاء</td>
+                    <td colSpan={6} className="px-6 py-12 text-center text-black/35">لا يوجد عملاء</td>
                   </tr>
                 ) : (
                   stats?.recent.map((lead) => (
@@ -169,7 +189,9 @@ export default function AdminPage() {
                           {lead.clientName || "—"}
                         </Link>
                       </td>
-                      <td className="max-w-[180px] truncate px-6 py-3.5 text-black/60">{lead.propertyTitle ?? "—"}</td>
+                      <td className="max-w-[180px] truncate px-6 py-3.5 text-black/60">{lead.propertyTitle ?? lead.district ?? "—"}</td>
+                      <td className="px-6 py-3.5 text-xs text-black/50">{leadSourceLabels[lead.source]}</td>
+                      <td className="px-6 py-3.5 text-xs text-black/55" dir="ltr">{lead.clientPhone ?? "—"}</td>
                       <td className="px-6 py-3.5">
                         <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium ${leadStatusColors[lead.status]}`}>
                           {leadStatusLabels[lead.status]}

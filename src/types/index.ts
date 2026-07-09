@@ -2,6 +2,8 @@ export type Locale = "en" | "ar";
 
 export type PropertyType = "villa" | "apartment" | "duplex" | "penthouse" | "townhouse";
 
+export type SaleCategory = "primary" | "resale";
+
 export interface District {
   id: string;
   name: { en: string; ar: string };
@@ -24,6 +26,9 @@ export interface Property {
   title: { en: string; ar: string };
   district: string;
   type: PropertyType;
+  saleCategory: SaleCategory;
+  downPaymentPercent?: number;
+  installmentYears?: number;
   price: number;
   area: number;
   bedrooms: number;
