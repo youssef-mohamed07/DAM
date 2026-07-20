@@ -1,5 +1,6 @@
 import type { Lead } from "@/types/leads";
 import type { SalesRep } from "@/lib/data/sales";
+import type { SaleCategory } from "@/types";
 import { getActiveSalesReps } from "@/lib/sales/repository";
 import {
   bumpRoundRobinIndex,
@@ -25,11 +26,26 @@ function pickByAgent(reps: SalesRep[], agentId?: string, rrIndex?: number) {
   return reps[0];
 }
 
+function filterByCategory(reps: SalesRep[], category?: SaleCategory) {
+  if (!category) return reps;
+  const matched = reps.filter((r) => r.saleCategory === category);
+  return matched.length > 0 ? matched : reps;
+}
+
+export function detectSaleCategoryFromText(...parts: (string | undefined)[]): SaleCategory | undefined {
+  const blob = parts.filter(Boolean).join(" ");
+  if (/إعادة\s*بيع|اعادة\s*بيع|resale/i.test(blob)) return "resale";
+  if (/أولي|اولي|primary/i.test(blob)) return "primary";
+  return undefined;
+}
+
 export async function pickSalesRepForLead(opts?: {
   propertyAgentId?: string;
+  saleCategory?: SaleCategory;
   strategy?: DistributionStrategy;
 }): Promise<SalesRep | null> {
-  const reps = await getActiveSalesReps();
+  const all = await getActiveSalesReps();
+  const reps = filterByCategory(all, opts?.saleCategory);
   if (reps.length === 0) return null;
 
   const settings = await getSystemSettings();
@@ -54,5 +70,7 @@ export async function pickSalesRepForExistingLead(
   lead: Lead,
   propertyAgentId?: string,
 ): Promise<SalesRep | null> {
-  return pickSalesRepForLead({ propertyAgentId });
+  const saleCategory =
+    detectSaleCategoryFromText(lead.goal, lead.message, lead.notes) ?? undefined;
+  return pickSalesRepForLead({ propertyAgentId, saleCategory });
 }

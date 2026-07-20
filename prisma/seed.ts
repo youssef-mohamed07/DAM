@@ -244,21 +244,15 @@ async function main() {
   }
 
   console.log("Seeding sales reps…");
+  // استبدال الفريق القديم بفريق الدفتر
+  await prisma.salesRep.deleteMany({});
   for (const s of salesReps) {
-    await prisma.salesRep.upsert({
-      where: { id: s.id },
-      create: {
+    await prisma.salesRep.create({
+      data: {
         id: s.id,
         name: s.name,
         role: s.role,
-        phone: s.phone,
-        whatsapp: s.whatsapp,
-        agentId: s.agentId ?? null,
-        active: s.active,
-      },
-      update: {
-        name: s.name,
-        role: s.role,
+        saleCategory: s.saleCategory,
         phone: s.phone,
         whatsapp: s.whatsapp,
         agentId: s.agentId ?? null,

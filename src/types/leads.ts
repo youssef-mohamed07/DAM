@@ -43,6 +43,8 @@ export interface CreateLeadInput {
   budget?: string;
   district?: string;
   notes?: string;
+  /** أولي أو إعادة بيع — لتوزيع المندوب */
+  saleCategory?: "primary" | "resale";
 }
 
 export interface LeadCreateResponse {

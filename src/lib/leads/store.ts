@@ -2,7 +2,7 @@ import type { CreateLeadInput, LeadStatus, UpdateLeadInput } from "@/types/leads
 import type { LeadCreateResponse } from "@/types/leads";
 import { getPropertyBySlug } from "@/lib/properties/repository";
 import { getSalesRep } from "@/lib/sales/repository";
-import { pickSalesRepForLead, pickSalesRepForExistingLead } from "@/lib/leads/distribute";
+import { pickSalesRepForLead, pickSalesRepForExistingLead, detectSaleCategoryFromText } from "@/lib/leads/distribute";
 import { prismaToLead } from "@/lib/leads/mapper";
 import { prisma } from "@/lib/prisma";
 import type { LeadStatus as PrismaLeadStatus } from "@prisma/client";
@@ -40,6 +40,7 @@ export async function createLead(input: CreateLeadInput): Promise<LeadCreateResp
   let propertyType: string | undefined = input.propertyType;
   let district: string | undefined = input.district;
   let propertyAgentId: string | undefined;
+  let saleCategory = input.saleCategory;
 
   if (input.propertySlug) {
     const property = await getPropertyBySlug(input.propertySlug);
@@ -47,6 +48,7 @@ export async function createLead(input: CreateLeadInput): Promise<LeadCreateResp
       propertyType = propertyType ?? property.type;
       district = district ?? property.district;
       propertyAgentId = property.agentId;
+      saleCategory = saleCategory ?? property.saleCategory;
       notes = [
         `السعر: ${formatPrice(property.price)}`,
         `المساحة: ${property.area} م²`,
@@ -56,11 +58,15 @@ export async function createLead(input: CreateLeadInput): Promise<LeadCreateResp
     }
   }
 
+  saleCategory =
+    saleCategory ??
+    detectSaleCategoryFromText(input.goal, input.message, input.notes);
+
   const combinedNotes = [input.notes, notes].filter(Boolean).join("\n\n") || undefined;
 
   const settings = await getSystemSettings();
   const rep = settings.autoAssign
-    ? await pickSalesRepForLead({ propertyAgentId })
+    ? await pickSalesRepForLead({ propertyAgentId, saleCategory })
     : null;
   const assignedSalesId = rep?.id;
   const status: LeadStatus = assignedSalesId ? "assigned" : "new";

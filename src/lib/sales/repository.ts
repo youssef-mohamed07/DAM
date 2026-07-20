@@ -1,11 +1,13 @@
 import { prisma } from "@/lib/prisma";
 import { salesReps as staticReps } from "@/lib/data/sales";
 import type { SalesRep } from "@/lib/data/sales";
+import type { SaleCategory } from "@/types";
 
 function rowToRep(row: {
   id: string;
   name: string;
   role: string;
+  saleCategory: string;
   phone: string;
   whatsapp: string;
   telegramChatId: string | null;
@@ -17,6 +19,7 @@ function rowToRep(row: {
     id: row.id,
     name: row.name,
     role: row.role,
+    saleCategory: (row.saleCategory as SaleCategory) || "primary",
     phone: row.phone,
     whatsapp: row.whatsapp,
     telegramChatId: row.telegramChatId ?? undefined,
@@ -51,6 +54,11 @@ export async function getSalesRepByAgentId(agentId: string) {
   return all.find((s) => s.agentId === agentId);
 }
 
+export async function getSalesRepsByCategory(category: SaleCategory) {
+  const all = await getActiveSalesReps();
+  return all.filter((s) => s.saleCategory === category);
+}
+
 /** توزيع عشوائي على مندوب نشط */
 export async function pickRandomSalesRep() {
   const reps = await getActiveSalesReps();
@@ -61,6 +69,7 @@ export async function pickRandomSalesRep() {
 export type SalesRepInput = {
   name: string;
   role: string;
+  saleCategory?: SaleCategory;
   phone: string;
   whatsapp: string;
   telegramChatId?: string;
@@ -76,6 +85,7 @@ export async function createSalesRep(input: SalesRepInput) {
       id,
       name: input.name,
       role: input.role,
+      saleCategory: input.saleCategory ?? "primary",
       phone: input.phone,
       whatsapp: input.whatsapp,
       telegramChatId: input.telegramChatId ?? null,
@@ -93,6 +103,7 @@ export async function updateSalesRep(id: string, input: Partial<SalesRepInput>) 
     data: {
       ...(input.name !== undefined ? { name: input.name } : {}),
       ...(input.role !== undefined ? { role: input.role } : {}),
+      ...(input.saleCategory !== undefined ? { saleCategory: input.saleCategory } : {}),
       ...(input.phone !== undefined ? { phone: input.phone } : {}),
       ...(input.whatsapp !== undefined ? { whatsapp: input.whatsapp } : {}),
       ...(input.telegramChatId !== undefined

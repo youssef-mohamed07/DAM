@@ -438,19 +438,27 @@ export default function AdminOperationsPage() {
                 </p>
               </div>
             </div>
-            <button
-              type="button"
-              onClick={syncTelegram}
-              disabled={busy === "sync"}
-              className="inline-flex items-center gap-2 rounded-lg bg-gold/10 hover:bg-gold/20 border border-gold/30 px-4 py-2 text-sm font-medium transition disabled:opacity-50"
-            >
-              {busy === "sync" ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <RefreshCw className="h-4 w-4" />
-              )}
-              مزامنة الآن
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={syncTelegram}
+                disabled={busy === "sync"}
+                className="inline-flex items-center gap-2 rounded-lg bg-gold/10 hover:bg-gold/20 border border-gold/30 px-4 py-2 text-sm font-medium transition disabled:opacity-50"
+              >
+                {busy === "sync" ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-4 w-4" />
+                )}
+                مزامنة الآن
+              </button>
+              <Link
+                href="/admin/telegram-import"
+                className="inline-flex items-center gap-2 rounded-lg border border-black/10 px-4 py-2 text-sm text-black/60 transition hover:border-gold/30 hover:text-black"
+              >
+                استيراد الرسائل والعقارات
+              </Link>
+            </div>
           </div>
 
           {/* الحالة */}

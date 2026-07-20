@@ -12,6 +12,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { districts } from "@/lib/data/districts";
+import { marketRegions } from "@/lib/data/regions";
 import { submitLead } from "@/lib/leads/client";
 import { saleCategoryLabel } from "@/lib/properties/sale-category";
 import { propertyTypeLabel } from "@/lib/utils";
@@ -343,6 +344,7 @@ export function HeroPropertyFlow() {
         propertyType: typeLabel,
         budget: budget || undefined,
         district: districtLabel,
+        saleCategory: saleCategory || undefined,
       });
       if (!result) throw new Error("failed");
       setStep("success");
@@ -794,12 +796,18 @@ export function HeroPropertyFlow() {
           </FlowField>
 
           <FlowField label={f.city}>
-            <input
+            <select
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              className="dam-contact-input w-full text-sm"
-              placeholder={f.cityPlaceholder}
-            />
+              className={selectClass}
+            >
+              <option value="">{f.cityPlaceholder}</option>
+              {marketRegions.map((r) => (
+                <option key={r.id} value={t(r.name)}>
+                  {t(r.name)}
+                </option>
+              ))}
+            </select>
           </FlowField>
 
           <FlowField label={f.contactTime}>

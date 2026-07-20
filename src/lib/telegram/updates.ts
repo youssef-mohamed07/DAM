@@ -1,12 +1,20 @@
 import { handleTelegramCommand } from "@/lib/telegram/commands";
 import { upsertGroupMember } from "@/lib/telegram/members";
+import { saveTelegramMessage } from "@/lib/telegram/messages-store";
 import type { TgChat, TgUser } from "@/lib/telegram/types";
+
+type TgPhotoSize = { file_id: string };
 
 type TgMessage = {
   message_id?: number;
+  date?: number;
   from?: TgUser;
   chat?: TgChat;
   text?: string;
+  caption?: string;
+  photo?: TgPhotoSize[];
+  document?: { file_id: string; mime_type?: string };
+  video?: { file_id: string };
   new_chat_members?: TgUser[];
   left_chat_member?: TgUser;
 };
@@ -16,6 +24,52 @@ function recordUsers(chatId: string, users: TgUser[] | undefined, isAdmin = fals
   return Promise.all(
     users.filter((u) => !u.is_bot).map((u) => upsertGroupMember(chatId, u, { isAdmin })),
   );
+}
+
+function senderName(from?: TgUser) {
+  if (!from) return null;
+  const full = [from.first_name, from.last_name].filter(Boolean).join(" ").trim();
+  return full || (from.username ? `@${from.username}` : null);
+}
+
+async function persistMessage(message: TgMessage) {
+  if (!message.chat?.id || !message.message_id) return;
+
+  const chatId = String(message.chat.id);
+  const isGroup = message.chat.type === "group" || message.chat.type === "supergroup";
+  if (!isGroup) return;
+
+  const text = message.text ?? message.caption ?? null;
+  const photo = message.photo?.length ? message.photo[message.photo.length - 1] : null;
+
+  let mediaType: string | null = null;
+  let mediaFileId: string | null = null;
+  if (photo) {
+    mediaType = "photo";
+    mediaFileId = photo.file_id;
+  } else if (message.document) {
+    mediaType = "document";
+    mediaFileId = message.document.file_id;
+  } else if (message.video) {
+    mediaType = "video";
+    mediaFileId = message.video.file_id;
+  }
+
+  if (!text && !mediaFileId) return;
+
+  await saveTelegramMessage({
+    chatId,
+    messageId: message.message_id,
+    chatTitle: message.chat.title ?? null,
+    senderUserId: message.from ? String(message.from.id) : null,
+    senderName: senderName(message.from),
+    text,
+    hasMedia: Boolean(mediaFileId),
+    mediaType,
+    mediaFileId,
+    messageDate: new Date((message.date ?? Date.now() / 1000) * 1000),
+    raw: message,
+  });
 }
 
 async function handleMessage(message: TgMessage) {
@@ -33,7 +87,6 @@ async function handleMessage(message: TgMessage) {
   }
 
   if (message.left_chat_member && !message.left_chat_member.is_bot) {
-    // نحتفظ بالعضو في الداتابيز — مفيد للربط لاحقاً
     await upsertGroupMember(chatId, message.left_chat_member);
   }
 
@@ -42,10 +95,11 @@ async function handleMessage(message: TgMessage) {
     return;
   }
 
-  // أي رسالة في الجروب (بعد تعطيل Privacy Mode) — تسجيل المرسل
   if (isGroup && message.from && !message.from.is_bot) {
     await upsertGroupMember(chatId, message.from);
   }
+
+  await persistMessage(message);
 }
 
 /** معالجة update واحد من Telegram (webhook أو polling) */

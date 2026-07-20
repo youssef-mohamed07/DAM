@@ -13,16 +13,21 @@ import {
   Bell,
   ExternalLink,
   Zap,
+  Download,
+  MessageCircle,
+  Kanban,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo, LogoMark } from "@/components/ui/Logo";
 
 const nav = [
-  { icon: LayoutDashboard, label: "لوحة التحكم", href: "/admin" },
+  { icon: LayoutDashboard, label: "CRM", href: "/admin" },
+  { icon: Kanban, label: "العملاء والبايبلاين", href: "/admin/leads" },
   { icon: Zap, label: "التوزيع والإشعارات", href: "/admin/operations" },
-  { icon: Building2, label: "العقارات", href: "/admin/properties" },
-  { icon: MessageSquare, label: "العملاء", href: "/admin/leads" },
+  { icon: MessageCircle, label: "واتساب", href: "/admin/whatsapp" },
   { icon: Users, label: "فريق المبيعات", href: "/admin/sales" },
+  { icon: Building2, label: "العقارات", href: "/admin/properties" },
+  { icon: Download, label: "استيراد تليجرام", href: "/admin/telegram-import" },
   { icon: ExternalLink, label: "الموقع", href: "/", external: true },
 ];
 
@@ -30,13 +35,25 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [newLeads, setNewLeads] = useState(0);
+  const [alerts, setAlerts] = useState({ newLeads: 0, unassigned: 0, failed: 0 });
 
   useEffect(() => {
-    fetch("/api/leads/stats", { credentials: "include" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((s) => setNewLeads(s?.byStatus?.new ?? 0))
-      .catch(() => setNewLeads(0));
+    Promise.all([
+      fetch("/api/leads/stats", { credentials: "include" }).then((r) =>
+        r.ok ? r.json() : null,
+      ),
+      fetch("/api/admin/operations", { credentials: "include" }).then((r) =>
+        r.ok ? r.json() : null,
+      ),
+    ])
+      .then(([stats, ops]) => {
+        setAlerts({
+          newLeads: stats?.byStatus?.new ?? 0,
+          unassigned: ops?.unassigned ?? 0,
+          failed: ops?.notifications?.failed ?? 0,
+        });
+      })
+      .catch(() => setAlerts({ newLeads: 0, unassigned: 0, failed: 0 }));
   }, [pathname]);
 
   if (pathname === "/admin/login") {
@@ -49,19 +66,21 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     router.refresh();
   }
 
+  const alertCount = alerts.unassigned + alerts.failed + alerts.newLeads;
+
   const Sidebar = (
     <div className="flex h-full flex-col">
-      <div className="border-b border-white/8 px-6 py-6">
+      <div className="border-b border-white/8 px-5 py-5">
         <Logo
           size="sm"
           href="/admin"
           showTagline
-          tagline="Admin Panel"
-          taglineClassName="text-white/35 uppercase tracking-[0.35em]"
+          tagline="CRM"
+          taglineClassName="text-white/40 text-xs tracking-[0.2em] uppercase"
         />
       </div>
 
-      <nav className="flex-1 space-y-1 p-4">
+      <nav className="flex-1 space-y-0.5 p-3">
         {nav.map((item) => {
           const active =
             !item.external &&
@@ -70,15 +89,21 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
               : pathname.startsWith(item.href));
 
           const className = cn(
-            "flex items-center gap-3 rounded-xl px-4 py-3 text-sm transition",
+            "flex items-center gap-3 px-3 py-2.5 text-sm transition",
             active
-              ? "bg-black/10 font-medium text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.15)]"
+              ? "bg-white/10 font-medium text-white"
               : "text-white/55 hover:bg-white/5 hover:text-white",
           );
 
           if (item.external) {
             return (
-              <a key={item.href} href={item.href} target="_blank" rel="noopener noreferrer" className={className}>
+              <a
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={className}
+              >
                 <item.icon className="h-4 w-4" />
                 {item.label}
                 <ExternalLink className="ms-auto h-3 w-3 opacity-40" />
@@ -86,13 +111,25 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             );
           }
 
+          const badge =
+            item.href === "/admin/leads"
+              ? alerts.newLeads
+              : item.href === "/admin"
+                ? alerts.unassigned
+                : 0;
+
           return (
-            <Link key={item.href} href={item.href} onClick={() => setMobileOpen(false)} className={className}>
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMobileOpen(false)}
+              className={className}
+            >
               <item.icon className="h-4 w-4" />
               {item.label}
-              {item.href === "/admin/leads" && newLeads > 0 ? (
-                <span className="ms-auto rounded-full bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
-                  {newLeads}
+              {badge > 0 ? (
+                <span className="ms-auto bg-red-500 px-1.5 py-0.5 text-[10px] font-bold text-white">
+                  {badge}
                 </span>
               ) : null}
             </Link>
@@ -100,11 +137,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
         })}
       </nav>
 
-      <div className="border-t border-white/8 p-4">
+      <div className="border-t border-white/8 p-3">
         <button
           type="button"
           onClick={logout}
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm text-white/50 transition hover:bg-red-500/10 hover:text-red-400"
+          className="flex w-full items-center gap-3 px-3 py-2.5 text-sm text-white/50 transition hover:bg-red-500/10 hover:text-red-400"
         >
           <LogOut className="h-4 w-4" />
           تسجيل الخروج
@@ -115,36 +152,62 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-screen w-full max-w-full overflow-x-clip admin-main-bg">
-      <aside className="hidden w-64 shrink-0 bg-[#0c0c0c] lg:block">{Sidebar}</aside>
+      <aside className="hidden w-60 shrink-0 bg-[#121212] lg:block">{Sidebar}</aside>
 
       {mobileOpen ? (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <button type="button" className="absolute inset-0 bg-black/60" onClick={() => setMobileOpen(false)} aria-label="إغلاق" />
-          <aside className="absolute start-0 top-0 h-full w-72 bg-[#0c0c0c] shadow-2xl">{Sidebar}</aside>
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/60"
+            onClick={() => setMobileOpen(false)}
+            aria-label="إغلاق"
+          />
+          <aside className="absolute start-0 top-0 h-full w-72 bg-[#121212] shadow-2xl">
+            {Sidebar}
+          </aside>
         </div>
       ) : null}
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-40 flex min-w-0 items-center justify-between border-b border-black/8 bg-white/90 px-3 py-3 backdrop-blur-md sm:px-4 lg:px-8">
+        <header className="sticky top-0 z-40 flex min-w-0 items-center justify-between border-b border-black/8 bg-white/95 px-3 py-3 sm:px-4 lg:px-8">
           <div className="flex items-center gap-3">
-            <button type="button" className="rounded-lg border border-black/10 p-2 lg:hidden" onClick={() => setMobileOpen(true)} aria-label="القائمة">
+            <button
+              type="button"
+              className="border border-black/10 p-2 lg:hidden"
+              onClick={() => setMobileOpen(true)}
+              aria-label="القائمة"
+            >
               <Menu className="h-5 w-5" />
             </button>
             <LogoMark size="xs" className="hidden sm:inline-flex" />
             <div>
-              <p className="text-sm font-semibold text-[#0a0a0a]">لوحة تحكم DAM</p>
-              <p className="text-[11px] text-black/40">مرحباً، Admin</p>
+              <p className="text-sm font-semibold text-[#121212]">DAM CRM</p>
+              <p className="text-[11px] text-black/40">إدارة العملاء والمبيعات</p>
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <span className="hidden items-center gap-1.5 rounded-full bg-black/8 px-3 py-1 text-[10px] font-medium text-black sm:flex">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              متصل
-            </span>
-            <button type="button" className="rounded-lg border border-black/10 p-2 text-black/50" aria-label="إشعارات">
+            <Link
+              href="/admin"
+              className="relative border border-black/10 p-2 text-black/50 transition hover:border-black/25 hover:text-black"
+              aria-label="تنبيهات"
+              title={
+                alertCount
+                  ? `${alerts.unassigned} بدون مندوب · ${alerts.newLeads} جديد · ${alerts.failed} إشعار فاشل`
+                  : "لا تنبيهات"
+              }
+            >
               <Bell className="h-4 w-4" />
-            </button>
-            <button type="button" onClick={logout} className="hidden rounded-lg border border-black/10 px-3 py-2 text-xs text-black/55 sm:block hover:border-red-200 hover:text-red-500">
+              {alertCount > 0 ? (
+                <span className="absolute -end-1 -top-1 flex h-4 min-w-4 items-center justify-center bg-red-500 px-1 text-[9px] font-bold text-white">
+                  {alertCount > 99 ? "99+" : alertCount}
+                </span>
+              ) : null}
+            </Link>
+            <button
+              type="button"
+              onClick={logout}
+              className="hidden border border-black/10 px-3 py-2 text-xs text-black/55 transition hover:border-red-200 hover:text-red-500 sm:block"
+            >
               خروج
             </button>
           </div>

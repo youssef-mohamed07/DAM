@@ -71,6 +71,7 @@ async function main() {
     id: rep.id,
     name: rep.name,
     role: rep.role,
+    saleCategory: (rep as { saleCategory?: string }).saleCategory === "resale" ? "resale" as const : "primary" as const,
     phone: rep.phone,
     whatsapp: rep.whatsapp,
     telegramUserId: rep.telegramUserId!,

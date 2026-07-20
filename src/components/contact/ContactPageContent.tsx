@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { company, whatsappUrl, facebookUrl } from "@/lib/data/company";
 import { districts } from "@/lib/data/districts";
-import { t, cn, formatPhoneIntl, formatPhoneLocal } from "@/lib/utils";
+import { t, cn, formatPhoneLocal } from "@/lib/utils";
 import { Num } from "@/components/ui/Num";
 import { submitLead } from "@/lib/leads/client";
 import { useLocale } from "@/providers/LocaleProvider";
@@ -166,23 +166,49 @@ export function ContactPageContent({
               </ul>
 
               <div className="dam-card-dark mt-10 space-y-4 rounded-2xl p-6">
-                <a
-                  href={`tel:${company.phone}`}
-                  className="flex items-center gap-3 text-[#0a0a0a] transition hover:text-gold"
-                >
-                  <Phone className="h-4 w-4 text-gold" />
-                  <span className="font-serif text-xl">
-                    <Num>{formatPhoneIntl(company.phone)}</Num>
-                  </span>
-                </a>
-                <a
-                  href={whatsappUrl()}
-                  className="flex items-center gap-3 text-sm text-black/55 transition hover:text-gold"
-                >
-                  <MessageCircle className="h-4 w-4 text-gold" />
-                  واتساب · <Num>{formatPhoneLocal(company.phoneLocal)}</Num>
-                </a>
-                <p className="flex items-center gap-3 text-sm text-black/45">
+                <div>
+                  <p className="mb-2 text-[10px] font-medium tracking-widest text-gold uppercase">
+                    أولي · Primary
+                  </p>
+                  <a
+                    href={`tel:${company.phones.primary.intl}`}
+                    className="flex items-center gap-3 text-[#0a0a0a] transition hover:text-gold"
+                  >
+                    <Phone className="h-4 w-4 text-gold" />
+                    <span className="font-serif text-xl">
+                      <Num>{formatPhoneLocal(company.phones.primary.local)}</Num>
+                    </span>
+                  </a>
+                  <a
+                    href={whatsappUrl(undefined, "primary")}
+                    className="mt-2 flex items-center gap-3 text-sm text-black/55 transition hover:text-gold"
+                  >
+                    <MessageCircle className="h-4 w-4 text-gold" />
+                    واتساب · {company.phones.primary.contact}
+                  </a>
+                </div>
+                <div className="border-t border-black/8 pt-4">
+                  <p className="mb-2 text-[10px] font-medium tracking-widest text-gold uppercase">
+                    إعادة بيع · Resale
+                  </p>
+                  <a
+                    href={`tel:${company.phones.resale.intl}`}
+                    className="flex items-center gap-3 text-[#0a0a0a] transition hover:text-gold"
+                  >
+                    <Phone className="h-4 w-4 text-gold" />
+                    <span className="font-serif text-xl">
+                      <Num>{formatPhoneLocal(company.phones.resale.local)}</Num>
+                    </span>
+                  </a>
+                  <a
+                    href={whatsappUrl(undefined, "resale")}
+                    className="mt-2 flex items-center gap-3 text-sm text-black/55 transition hover:text-gold"
+                  >
+                    <MessageCircle className="h-4 w-4 text-gold" />
+                    واتساب · {company.phones.resale.contact}
+                  </a>
+                </div>
+                <p className="flex items-center gap-3 border-t border-black/8 pt-4 text-sm text-black/45">
                   <Clock className="h-4 w-4 text-gold" />
                   {company.hours} · {company.hoursFriday}
                 </p>

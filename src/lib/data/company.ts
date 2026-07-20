@@ -15,10 +15,30 @@ export const company = {
   facebookLikes: 339,
   profileImage:
     "https://scontent.fcai21-3.fna.fbcdn.net/v/t39.30808-1/529325187_122102027942968319_1540042952236735989_n.jpg",
-  whatsapp: "201008657085",
-  phone: "+20 100 865 7085",
-  phoneDisplay: "+20 100 865 7085",
-  phoneLocal: "01008657085",
+  /** الرقم الرئيسي للاتصال (أولي) */
+  whatsapp: "201130081542",
+  phone: "+20 113 008 1542",
+  phoneDisplay: "+20 113 008 1542",
+  phoneLocal: "01130081542",
+  /** أرقام حسب نوع العقار */
+  phones: {
+    primary: {
+      local: "01130081542",
+      display: "+20 113 008 1542",
+      intl: "+201130081542",
+      whatsapp: "201130081542",
+      label: "أولي",
+      contact: "دنيا المليجي",
+    },
+    resale: {
+      local: "01010116450",
+      display: "+20 101 011 6450",
+      intl: "+201010116450",
+      whatsapp: "201010116450",
+      label: "إعادة بيع",
+      contact: "أحمد المليجي",
+    },
+  },
   email: "info@damproperties.eg",
   address: "الحي الخامس، مدينة العبور، القليوبية",
   addressDetail: "على بُعد دقائق من كارفور العبور ومول جولف سيتي",
@@ -153,10 +173,20 @@ export const company = {
   ],
 } as const;
 
-export function whatsappUrl(message?: string) {
-  const base = `https://wa.me/${company.whatsapp}`;
+export function whatsappUrl(message?: string, category?: "primary" | "resale") {
+  const number =
+    category === "resale"
+      ? company.phones.resale.whatsapp
+      : category === "primary"
+        ? company.phones.primary.whatsapp
+        : company.whatsapp;
+  const base = `https://wa.me/${number}`;
   if (!message) return base;
   return `${base}?text=${encodeURIComponent(message)}`;
+}
+
+export function phoneForCategory(category: "primary" | "resale") {
+  return company.phones[category];
 }
 
 export function facebookUrl() {

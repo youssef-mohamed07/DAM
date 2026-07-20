@@ -16,7 +16,11 @@
     "telegram:test": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-test.ts",
     "telegram:sync": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-sync-members.ts",
     "telegram:setup": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-setup.ts",
-    "telegram:poll": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-poll.ts"
+    "telegram:poll": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-poll.ts",
+    "telegram:pull": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-pull.ts",
+    "telegram:import": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-import.ts",
+    "telegram:auth": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-auth.ts",
+    "telegram:fetch": "node --env-file=.env.local -- ./node_modules/.bin/tsx scripts/telegram-fetch.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.19.0",
@@ -29,7 +33,8 @@
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "react-leaflet": "^5.0.0",
-    "recharts": "^3.9.1"
+    "recharts": "^3.9.1",
+    "telegram": "^2.26.22"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

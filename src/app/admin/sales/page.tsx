@@ -11,6 +11,7 @@ import type { SalesRep } from "@/lib/data/sales";
 const emptyForm = {
   name: "",
   role: "",
+  saleCategory: "primary" as "primary" | "resale",
   phone: "",
   whatsapp: "",
   telegramChatId: "",
@@ -54,6 +55,7 @@ export default function AdminSalesPage() {
     setForm({
       name: rep.name,
       role: rep.role,
+      saleCategory: rep.saleCategory ?? "primary",
       phone: rep.phone,
       whatsapp: rep.whatsapp,
       telegramChatId: rep.telegramChatId ?? "",
@@ -156,9 +158,18 @@ export default function AdminSalesPage() {
               </div>
               <h2 className="relative mt-4 text-lg font-semibold text-[#0a0a0a]">{rep.name}</h2>
               <p className="relative text-sm text-black/50">{rep.role}</p>
+              <span
+                className={`relative mt-2 inline-block rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
+                  rep.saleCategory === "resale"
+                    ? "bg-violet-500/10 text-violet-700"
+                    : "bg-sky-500/10 text-sky-700"
+                }`}
+              >
+                {rep.saleCategory === "resale" ? "Resale" : "Primary"}
+              </span>
               <p className="relative mt-2 text-xs text-black/40" dir="ltr">
-                WhatsApp: {rep.whatsapp}
-                {rep.telegramUserId ? ` · @${rep.telegramUserId}` : ""}
+                {rep.phone} · WA: {rep.whatsapp}
+                {rep.telegramUserId ? ` · TG: ${rep.telegramUserId}` : ""}
               </p>
               <span
                 className={`relative mt-3 inline-block rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
@@ -224,6 +235,22 @@ export default function AdminSalesPage() {
                   />
                 </div>
               ))}
+              <div>
+                <label className="mb-1 block text-xs font-medium text-black/45">النوع</label>
+                <select
+                  className="dam-contact-input w-full text-sm"
+                  value={form.saleCategory}
+                  onChange={(e) =>
+                    setForm({
+                      ...form,
+                      saleCategory: e.target.value as "primary" | "resale",
+                    })
+                  }
+                >
+                  <option value="primary">أولي (Primary)</option>
+                  <option value="resale">إعادة بيع (Resale)</option>
+                </select>
+              </div>
               <div>
                 <label className="mb-1 block text-xs font-medium text-black/45">
                   Telegram User ID (للمنشن)

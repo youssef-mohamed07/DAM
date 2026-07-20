@@ -92,10 +92,14 @@ model Property {
   lng           Float    @default(31.47)
   agentId       String   @map("agent_id")
   video         String?
+  telegramListingCode String? @map("telegram_listing_code")
+  telegramChatId      String? @map("telegram_chat_id")
+  telegramMessageId   Int?    @map("telegram_message_id")
   createdAt     DateTime @default(now()) @map("created_at")
   updatedAt     DateTime @updatedAt @map("updated_at")
 
   @@index([published])
+  @@index([telegramListingCode])
   @@index([featured])
   @@index([district])
   @@index([saleCategory])
@@ -103,18 +107,20 @@ model Property {
 }
 
 model SalesRep {
-  id        String   @id
-  name      String
-  role      String
-  phone     String
-  whatsapp  String
+  id           String   @id
+  name         String
+  role         String
+  saleCategory String   @default("primary") @map("sale_category")
+  phone        String
+  whatsapp     String
   telegramChatId String?  @map("telegram_chat_id")
   telegramUserId String?  @map("telegram_user_id")
-  agentId   String?  @map("agent_id")
-  active    Boolean  @default(true)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  agentId      String?  @map("agent_id")
+  active       Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
+  @@index([saleCategory])
   @@map("sales_reps")
 }
 
@@ -140,4 +146,57 @@ model AppSetting {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   @@map("app_settings")
+}
+
+model TelegramMessage {
+  id           String   @id @default(uuid()) @db.Uuid
+  chatId       String   @map("chat_id")
+  messageId    Int      @map("message_id")
+  chatTitle    String?  @map("chat_title")
+  senderUserId String?  @map("sender_user_id")
+  senderName   String?  @map("sender_name")
+  text         String?  @db.Text
+  hasMedia     Boolean  @default(false) @map("has_media")
+  mediaType    String?  @map("media_type")
+  mediaFileId  String?  @map("media_file_id")
+  mediaPath    String?  @map("media_path")
+  messageDate  DateTime @map("message_date")
+  importedAt   DateTime @default(now()) @map("imported_at")
+  raw          Json?
+
+  listing TelegramListing?
+
+  @@unique([chatId, messageId])
+  @@index([chatId])
+  @@index([messageDate(sort: Desc)])
+  @@map("telegram_messages")
+}
+
+model TelegramListing {
+  id           String   @id @default(uuid()) @db.Uuid
+  messageDbId  String   @unique @map("message_db_id") @db.Uuid
+  listingCode  String?  @map("listing_code")
+  saleCategory String   @default("resale") @map("sale_category")
+  propertyType String?  @map("property_type")
+  district     String?
+  compound     String?
+  price        Int?
+  area         Int?
+  bedrooms     Int?
+  bathrooms    Int?
+  finishing    String?
+  delivery     String?
+  paymentNotes String?  @map("payment_notes") @db.Text
+  rawText      String   @map("raw_text") @db.Text
+  parsed       Json?
+  propertyId   String?  @map("property_id")
+  status       String   @default("parsed")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  message TelegramMessage @relation(fields: [messageDbId], references: [id], onDelete: Cascade)
+
+  @@index([listingCode])
+  @@index([district])
+  @@index([status])
+  @@map("telegram_listings")
 }
